@@ -6,7 +6,8 @@
   "author": "Gabriel Missio",
   "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,8 @@
   },
   "homepage": "https://github.com/gabrielmissio/product-api#readme",
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-config-standard": "^16.0.3"
+    "eslint": "7.32.0",
+    "eslint-config-standard": "16.0.3",
+    "husky": "^7.0.0"
   }
 }
