@@ -6,19 +6,19 @@ module.exports = class LoginRouter {
   };
 
   async route(httpRequest) {
-    if (!httpRequest || !httpRequest.body) {
+    try {
+      const { email, password } = httpRequest.body;
+      if (!email) {
+        return HttpResponse.badRequest('email');
+      }
+      if (!password) {
+        return HttpResponse.badRequest('password');
+      }
+
+      await this.authUseCase.auth(email, password);
+      return HttpResponse.unauthorized();
+    } catch (error) {
       return HttpResponse.internalError();
-    }
-
-    const { email, password } = httpRequest.body;
-    if (!email) {
-      return HttpResponse.badRequest('email');
-    }
-    if (!password) {
-      return HttpResponse.badRequest('password');
-    }
-
-    await this.authUseCase.auth(email, password);
-    return HttpResponse.unauthorized();
+    };
   };
 };

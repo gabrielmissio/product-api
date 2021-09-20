@@ -90,4 +90,18 @@ describe('Given the login routes', () => {
       expect(httpResponse.body).toEqual(new UnauthorizedError());
     });
   });
+
+  describe('And no AuthUseCase is provided', () => {
+    test('Then I expect it returns 500', async() => {
+      const sut = new LoginRouter();
+      const httpRequest = {
+        body: {
+          email: 'any@mail.com',
+          password: 'any_password'
+        }
+      };
+      const httpResponse = await sut.route(httpRequest);
+      expect(httpResponse.statusCode).toBe(500);
+    });
+  });
 });
