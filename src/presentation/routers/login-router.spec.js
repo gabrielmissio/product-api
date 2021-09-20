@@ -1,10 +1,16 @@
 class LoginRouter {
   async route (httpRequest) {
+    if (!httpRequest || !httpRequest.body) {
+      return {
+        statusCode: 500
+      };
+    }
+
     const { email, password } = httpRequest;
     if (!email || !password) {
       return {
         statusCode: 400
-      }
+      };
     }
   }
 }
@@ -33,6 +39,22 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
+    });
+  });
+
+  describe('And no httpRequest is provided', () => {
+    test('Then I expect it returns 500', async() => {
+      const sut = new LoginRouter();
+      const httpResponse = await sut.route();
+      expect(httpResponse.statusCode).toBe(500);
+    });
+  });
+
+  describe('And the httpRequest has no body', () => {
+    test('Then I expect it returns 500', async() => {
+      const sut = new LoginRouter({});
+      const httpResponse = await sut.route();
+      expect(httpResponse.statusCode).toBe(500);
     });
   });
 });
