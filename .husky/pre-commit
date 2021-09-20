@@ -1,2 +1,3 @@
 #!/bin/sh
 npx eslint .
+npm test

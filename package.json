@@ -6,7 +6,7 @@
   "author": "Gabriel Missio",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "test": "jest --color",
     "prepare": "husky install"
   },
   "repository": {
