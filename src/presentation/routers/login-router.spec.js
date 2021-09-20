@@ -1,6 +1,7 @@
 const LoginRouter = require('./login-router');
 const MissingParamError = require('./../helpers/missing-param-error');
 const UnauthorizedError = require('./../helpers/unauthorized-error');
+const InternalError = require('./../helpers/internal-error');
 
 const makeSut = () => {
   class AuthUseCaseSpy {
@@ -51,6 +52,7 @@ describe('Given the login routes', () => {
       const { sut } = makeSut();
       const httpResponse = await sut.route();
       expect(httpResponse.statusCode).toBe(500);
+      expect(httpResponse.body).toEqual(new InternalError());
     });
   });
 
@@ -59,6 +61,7 @@ describe('Given the login routes', () => {
       const { sut } = makeSut();
       const httpResponse = await sut.route();
       expect(httpResponse.statusCode).toBe(500);
+      expect(httpResponse.body).toEqual(new InternalError());
     });
   });
 
@@ -102,6 +105,22 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
+      expect(httpResponse.body).toEqual(new InternalError());
+    });
+  });
+
+  describe('And AuthUseCase has no auth method', () => {
+    test('Then I expect it returns 500', async() => {
+      const sut = new LoginRouter();
+      const httpRequest = {
+        body: {
+          email: 'any@mail.com',
+          password: 'any_password'
+        }
+      };
+      const httpResponse = await sut.route(httpRequest);
+      expect(httpResponse.statusCode).toBe(500);
+      expect(httpResponse.body).toEqual(new InternalError());
     });
   });
 });
