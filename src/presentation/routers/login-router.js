@@ -19,5 +19,6 @@ module.exports = class LoginRouter {
     }
 
     await this.authUseCase.auth(email, password);
+    return HttpResponse.unauthorized();
   };
 };

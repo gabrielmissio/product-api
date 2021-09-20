@@ -61,7 +61,7 @@ describe('Given the login routes', () => {
     });
   });
 
-  describe('And pass correct params', () => {
+  describe('And pass valid credentials', () => {
     test('Then I expect it calls auth from authUseCaseSpy with the same params', async() => {
       const { sut, authUseCaseSpy } = makeSut();
       const httpRequest = {
@@ -72,6 +72,21 @@ describe('Given the login routes', () => {
       };
       await sut.route(httpRequest);
       expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
+    });
+  });
+
+  describe('And pass invalid credentials', () => {
+    test('Then I expect it returns 401', async() => {
+      const { sut } = makeSut();
+      const httpRequest = {
+        body: {
+          email: 'valid@mail.com',
+          password: 'validPassword'
+        }
+      };
+      const httpResponse = await sut.route(httpRequest);
+      expect(httpResponse.statusCode).toBe(401);
+      // valid error
     });
   });
 });
