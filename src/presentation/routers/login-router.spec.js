@@ -2,9 +2,17 @@ const LoginRouter = require('./login-router');
 const MissingParamError = require('./../helpers/missing-param-error');
 
 const makeSut = () => {
-  const sut = new LoginRouter();
+  class AuthUseCaseSpy {
+    async auth(email, password) {
+      this.email = email;
+      this.password = password;
+    }
+  }
+  const authUseCaseSpy = new AuthUseCaseSpy();
+  const sut = new LoginRouter(authUseCaseSpy);
   return {
-    sut
+    sut,
+    authUseCaseSpy
   };
 };
 
@@ -50,6 +58,20 @@ describe('Given the login routes', () => {
       const { sut } = makeSut();
       const httpResponse = await sut.route();
       expect(httpResponse.statusCode).toBe(500);
+    });
+  });
+
+  describe('And pass correct params', () => {
+    test('Then I expect it calls auth from authUseCaseSpy with the same params', async() => {
+      const { sut, authUseCaseSpy } = makeSut();
+      const httpRequest = {
+        body: {
+          email: 'valid@mail.com',
+          password: 'validPassword'
+        }
+      };
+      await sut.route(httpRequest);
+      expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
     });
   });
 });
