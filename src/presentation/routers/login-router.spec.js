@@ -111,7 +111,7 @@ describe('Given the login routes', () => {
 
   describe('And AuthUseCase has no auth method', () => {
     test('Then I expect it returns 500', async() => {
-      const sut = new LoginRouter();
+      const sut = new LoginRouter({});
       const httpRequest = {
         body: {
           email: 'any@mail.com',
