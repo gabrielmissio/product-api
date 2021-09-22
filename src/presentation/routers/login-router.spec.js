@@ -8,10 +8,14 @@ const makeSut = () => {
     async auth(email, password) {
       this.email = email;
       this.password = password;
+      return this.acessToken;
     }
   }
+
   const authUseCaseSpy = new AuthUseCaseSpy();
   const sut = new LoginRouter(authUseCaseSpy);
+  authUseCaseSpy.acessToken = 'valid_acess_token';
+
   return {
     sut,
     authUseCaseSpy
@@ -77,11 +81,24 @@ describe('Given the login routes', () => {
       await sut.route(httpRequest);
       expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
     });
+
+    test('Then I expect it returns 200', async() => {
+      const { sut } = makeSut();
+      const httpRequest = {
+        body: {
+          email: 'valid@mail.com',
+          password: 'validPassword'
+        }
+      };
+      const httpResponse = await sut.route(httpRequest);
+      expect(httpResponse.statusCode).toBe(200);
+    });
   });
 
   describe('And pass invalid credentials', () => {
     test('Then I expect it returns 401', async() => {
-      const { sut } = makeSut();
+      const { sut, authUseCaseSpy } = makeSut();
+      authUseCaseSpy.acessToken = null;
       const httpRequest = {
         body: {
           email: 'valid@mail.com',
