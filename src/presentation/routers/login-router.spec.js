@@ -82,8 +82,8 @@ describe('Given the login routes', () => {
       expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
     });
 
-    test('Then I expect it returns 200', async() => {
-      const { sut } = makeSut();
+    test('Then I expect it returns 200 and an acess token', async() => {
+      const { sut, authUseCaseSpy } = makeSut();
       const httpRequest = {
         body: {
           email: 'valid@mail.com',
@@ -92,6 +92,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(200);
+      expect(httpResponse.body.acessToken).toEqual(authUseCaseSpy.acessToken);
     });
   });
 
