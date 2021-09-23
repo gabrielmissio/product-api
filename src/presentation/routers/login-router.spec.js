@@ -4,6 +4,17 @@ const UnauthorizedError = require('./../helpers/unauthorized-error');
 const InternalError = require('./../helpers/internal-error');
 
 const makeSut = () => {
+  const authUseCaseSpy = makeAuthUseCaseSpy();
+  const sut = new LoginRouter(authUseCaseSpy);
+  authUseCaseSpy.acessToken = 'valid_acess_token';
+
+  return {
+    sut,
+    authUseCaseSpy
+  };
+};
+
+const makeAuthUseCaseSpy = () => {
   class AuthUseCaseSpy {
     async auth(email, password) {
       this.email = email;
@@ -12,14 +23,17 @@ const makeSut = () => {
     }
   }
 
-  const authUseCaseSpy = new AuthUseCaseSpy();
-  const sut = new LoginRouter(authUseCaseSpy);
-  authUseCaseSpy.acessToken = 'valid_acess_token';
+  return new AuthUseCaseSpy();
+};
 
-  return {
-    sut,
-    authUseCaseSpy
-  };
+const makeAuthUseCaseSpyWithError = () => {
+  class AuthUseCaseSpy {
+    async auth(email, password) {
+      throw new Error('any_error');
+    }
+  }
+
+  return new AuthUseCaseSpy();
 };
 
 describe('Given the login routes', () => {
@@ -130,6 +144,22 @@ describe('Given the login routes', () => {
   describe('And AuthUseCase has no auth method', () => {
     test('Then I expect it returns 500', async() => {
       const sut = new LoginRouter({});
+      const httpRequest = {
+        body: {
+          email: 'any@mail.com',
+          password: 'any_password'
+        }
+      };
+      const httpResponse = await sut.route(httpRequest);
+      expect(httpResponse.statusCode).toBe(500);
+      expect(httpResponse.body).toEqual(new InternalError());
+    });
+  });
+
+  describe('And AuthUseCase throws an error', () => {
+    test('Then I expect it returns 500', async() => {
+      const authUseCase = makeAuthUseCaseSpyWithError();
+      const sut = new LoginRouter(authUseCase);
       const httpRequest = {
         body: {
           email: 'any@mail.com',
