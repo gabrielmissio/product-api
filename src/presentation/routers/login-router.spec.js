@@ -5,13 +5,25 @@ const InternalError = require('./../helpers/internal-error');
 
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCaseSpy();
-  const sut = new LoginRouter(authUseCaseSpy);
+  const emailValidator = makeEmailValidatorSpy();
+  const sut = new LoginRouter(authUseCaseSpy, emailValidator);
   authUseCaseSpy.acessToken = 'valid_acess_token';
-
+  emailValidator.validateResponse = true;
   return {
     sut,
-    authUseCaseSpy
+    authUseCaseSpy,
+    emailValidator
   };
+};
+
+const makeEmailValidatorSpy = () => {
+  class EmailValidator {
+    isValid(email) {
+      return this.validateResponse;
+    };
+  };
+
+  return new EmailValidator();
 };
 
 const makeAuthUseCaseSpy = () => {
@@ -169,6 +181,22 @@ describe('Given the login routes', () => {
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
       expect(httpResponse.body).toEqual(new InternalError());
+    });
+  });
+
+  describe('And httpRequest body has an invalid email', () => {
+    test('Then I expect it returns 400', async() => {
+      const { sut, emailValidator } = makeSut();
+      emailValidator.validateResponse = false;
+      const httpRequest = {
+        body: {
+          email: 'invalid@mail.com',
+          password: 'any_password'
+        }
+      };
+      const httpResponse = await sut.route(httpRequest);
+      expect(httpResponse.statusCode).toBe(400);
+      // expect(httpResponse.body).toEqual(new InternalError());
     });
   });
 });

@@ -1,14 +1,18 @@
 const HttpResponse = require('./../helpers/http-response');
 
 module.exports = class LoginRouter {
-  constructor(authUseCase) {
+  constructor(authUseCase, emailValidator) {
     this.authUseCase = authUseCase;
+    this.emailValidator = emailValidator;
   };
 
   async route(httpRequest) {
     try {
       const { email, password } = httpRequest.body;
       if (!email) {
+        return HttpResponse.badRequest('email');
+      }
+      if (!this.emailValidator.isValid(email)) {
         return HttpResponse.badRequest('email');
       }
       if (!password) {
