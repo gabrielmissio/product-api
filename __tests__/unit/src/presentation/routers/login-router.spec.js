@@ -200,4 +200,36 @@ describe('Given the login routes', () => {
       expect(httpResponse.body).toEqual(new InvalidParamError('email'));
     });
   });
+
+  describe('And emailValidator is not provided', () => {
+    test('Then I expect it returns 500', async() => {
+      const { authUseCaseSpy } = makeSut();
+      const sut = new LoginRouter(authUseCaseSpy);
+      const httpRequest = {
+        body: {
+          email: 'any@mail.com',
+          password: 'any_password'
+        }
+      };
+      const httpResponse = await sut.route(httpRequest);
+      expect(httpResponse.statusCode).toBe(500);
+      expect(httpResponse.body).toEqual(new InternalError());
+    });
+  });
+
+  describe('And emailValidator  has no isValid method', () => {
+    test('Then I expect it returns 500', async() => {
+      const { authUseCaseSpy } = makeSut();
+      const sut = new LoginRouter(authUseCaseSpy, {});
+      const httpRequest = {
+        body: {
+          email: 'any@mail.com',
+          password: 'any_password'
+        }
+      };
+      const httpResponse = await sut.route(httpRequest);
+      expect(httpResponse.statusCode).toBe(500);
+      expect(httpResponse.body).toEqual(new InternalError());
+    });
+  });
 });
