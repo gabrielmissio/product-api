@@ -2,6 +2,7 @@ const LoginRouter = require('./login-router');
 const MissingParamError = require('./../helpers/missing-param-error');
 const UnauthorizedError = require('./../helpers/unauthorized-error');
 const InternalError = require('./../helpers/internal-error');
+const InvalidParamError = require('./../helpers/invalid-param-error');
 
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCaseSpy();
@@ -196,7 +197,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
-      // expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body).toEqual(new InvalidParamError('email'));
     });
   });
 });
