@@ -20,6 +20,7 @@ const makeSut = () => {
 const makeEmailValidatorSpy = () => {
   class EmailValidator {
     isValid(email) {
+      this.email = email;
       return this.validateResponse;
     };
   };
@@ -107,7 +108,19 @@ describe('Given the login routes', () => {
   });
 
   describe('And pass valid credentials', () => {
-    test('Then I expect it calls auth from authUseCaseSpy with the same params', async() => {
+    test('Then I expect it calls auth from authUseCase with the expected params', async() => {
+      const { sut, emailValidator } = makeSut();
+      const httpRequest = {
+        body: {
+          email: 'valid@mail.com',
+          password: 'validPassword'
+        }
+      };
+      await sut.route(httpRequest);
+      expect(emailValidator.email).toBe(httpRequest.body.email);
+    });
+
+    test('Then I expect it calls isValid from emailValidator with the expected params', async() => {
       const { sut, authUseCaseSpy } = makeSut();
       const httpRequest = {
         body: {
