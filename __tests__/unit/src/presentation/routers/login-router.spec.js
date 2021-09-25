@@ -1,41 +1,54 @@
 const LoginRouter = require('../../../../../src/presentation/routers/login-router');
-const MissingParamError = require('../../../../../src/presentation/helpers/errors/missing-param-error');
 const UnauthorizedError = require('../../../../../src/presentation/helpers/errors/unauthorized-error');
 const InternalError = require('../../../../../src/presentation/helpers/errors/internal-error');
-const InvalidParamError = require('../../../../../src/presentation/helpers/errors/invalid-param-error');
+const InvalidRequestError = require('../../../../../src/presentation/helpers/errors/invalid-request-error');
 
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCaseSpy();
-  const emailValidator = makeEmailValidatorSpy();
-  const sut = new LoginRouter(authUseCaseSpy, emailValidator);
+  const requestValidatorSpy = makeRequestValidatorSpy();
+  const sut = new LoginRouter(authUseCaseSpy, requestValidatorSpy);
   authUseCaseSpy.acessToken = 'valid_acess_token';
-  emailValidator.validateResponse = true;
   return {
     sut,
     authUseCaseSpy,
-    emailValidator
+    requestValidatorSpy
   };
 };
 
-const makeEmailValidatorSpy = () => {
-  class EmailValidator {
-    isValid(email) {
-      this.email = email;
-      return this.validateResponse;
+const makeRequestValidatorSpy = () => {
+  class RequestValidator {
+    validate(payload) {
+      this.payload = payload;
+      return this.error;
     };
   };
-
-  return new EmailValidator();
+  const requestValidatorSpy = new RequestValidator();
+  requestValidatorSpy.error = null;
+  return requestValidatorSpy;
 };
 
-const makeEmailValidatorSpyWithError = () => {
-  class EmailValidator {
-    isValid(email) {
+const makeRequestValidatorSpyWithError = () => {
+  class RequestValidator {
+    validate(payload) {
       throw new Error('any_error');
     };
   };
 
-  return new EmailValidator();
+  return new RequestValidator();
+};
+
+const makeRequestValidator = () => {
+  class RequestValidator {
+    constructor(schema) {
+      this.schema = schema;
+    };
+    validate(payload) {
+      const { error } = this.schema.validate(payload, { abortEarly: false });
+      return error;
+    };
+  };
+
+  return new RequestValidator(loginValidator);
 };
 
 const makeAuthUseCaseSpy = () => {
@@ -63,7 +76,8 @@ const makeAuthUseCaseSpyWithError = () => {
 describe('Given the login routes', () => {
   describe('And no email is provided', () => {
     test('Then I expect it returns 400', async() => {
-      const { sut } = makeSut();
+      const { sut,requestValidatorSpy } = makeSut();
+      requestValidatorSpy.error = 'ValidationError: "email" is required';
       const httpRequest = {
         body: {
           password: 'any_password'
@@ -71,13 +85,14 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
-      expect(httpResponse.body).toEqual(new MissingParamError('email'));
+      expect(httpResponse.body).toEqual(new InvalidRequestError('ValidationError: "email" is required'));
     });
   });
 
   describe('And no password is provided', () => {
     test('Then I expect it returns 400', async() => {
-      const { sut } = makeSut();
+      const { sut, requestValidatorSpy } = makeSut();
+      requestValidatorSpy.error = 'ValidationError: "password" is required';
       const httpRequest = {
         body: {
           email: 'any_email'
@@ -85,7 +100,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
-      expect(httpResponse.body).toEqual(new MissingParamError('password'));
+      expect(httpResponse.body).toEqual(new InvalidRequestError('ValidationError: "password" is required'));
     });
   });
 
@@ -109,18 +124,6 @@ describe('Given the login routes', () => {
 
   describe('And pass valid credentials', () => {
     test('Then I expect it calls auth from authUseCase with the expected params', async() => {
-      const { sut, emailValidator } = makeSut();
-      const httpRequest = {
-        body: {
-          email: 'valid@mail.com',
-          password: 'validPassword'
-        }
-      };
-      await sut.route(httpRequest);
-      expect(emailValidator.email).toBe(httpRequest.body.email);
-    });
-
-    test('Then I expect it calls isValid from emailValidator with the expected params', async() => {
       const { sut, authUseCaseSpy } = makeSut();
       const httpRequest = {
         body: {
@@ -130,6 +133,18 @@ describe('Given the login routes', () => {
       };
       await sut.route(httpRequest);
       expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
+    });
+
+    test('Then I expect it calls validate from requestValidator with the expected params', async() => {
+      const { sut, requestValidatorSpy } = makeSut();
+      const httpRequest = {
+        body: {
+          email: 'valid@mail.com',
+          password: 'validPassword'
+        }
+      };
+      await sut.route(httpRequest);
+      expect(requestValidatorSpy.payload).toBe(httpRequest.body);
     });
 
     test('Then I expect it returns 200 and an acess token', async() => {
@@ -210,8 +225,8 @@ describe('Given the login routes', () => {
 
   describe('And httpRequest body has an invalid email', () => {
     test('Then I expect it returns 400', async() => {
-      const { sut, emailValidator } = makeSut();
-      emailValidator.validateResponse = false;
+      const { sut, requestValidatorSpy } = makeSut();
+      requestValidatorSpy.error = 'ValidationError: "email" is required';
       const httpRequest = {
         body: {
           email: 'invalid@mail.com',
@@ -220,11 +235,11 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
-      expect(httpResponse.body).toEqual(new InvalidParamError('email'));
+      expect(httpResponse.body).toEqual(new InvalidRequestError('ValidationError: "email" is required'));
     });
   });
 
-  describe('And emailValidator is not provided', () => {
+  describe('And requestValidator is not provided', () => {
     test('Then I expect it returns 500', async() => {
       const { authUseCaseSpy } = makeSut();
       const sut = new LoginRouter(authUseCaseSpy);
@@ -240,7 +255,7 @@ describe('Given the login routes', () => {
     });
   });
 
-  describe('And emailValidator  has no isValid method', () => {
+  describe('And requestValidator has no validate method', () => {
     test('Then I expect it returns 500', async() => {
       const { authUseCaseSpy } = makeSut();
       const sut = new LoginRouter(authUseCaseSpy, {});
@@ -256,11 +271,11 @@ describe('Given the login routes', () => {
     });
   });
 
-  describe('And emailValidator  throws an error', () => {
+  describe('And requestValidator  throws an error', () => {
     test('Then I expect it returns 500', async() => {
       const { authUseCaseSpy } = makeSut();
-      const emailValidator = makeEmailValidatorSpyWithError();
-      const sut = new LoginRouter(authUseCaseSpy, emailValidator);
+      const requestValidator = makeRequestValidatorSpyWithError();
+      const sut = new LoginRouter(authUseCaseSpy, requestValidator);
       const httpRequest = {
         body: {
           email: 'any@mail.com',

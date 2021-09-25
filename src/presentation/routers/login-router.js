@@ -1,24 +1,18 @@
 const HttpResponse = require('../helpers/utilis/http-response');
-const MissingParamError = require('./../helpers/errors/missing-param-error');
-const InvalidParamError = require('./../helpers/errors/invalid-param-error');
+const InvalidRequestError = require('./../helpers/errors/invalid-request-error');
 
 module.exports = class LoginRouter {
-  constructor(authUseCase, emailValidator) {
+  constructor(authUseCase, requestValidator) {
     this.authUseCase = authUseCase;
-    this.emailValidator = emailValidator;
+    this.requestValidator = requestValidator;
   };
 
   async route(httpRequest) {
     try {
       const { email, password } = httpRequest.body;
-      if (!email) {
-        return HttpResponse.badRequest(new MissingParamError('email'));
-      }
-      if (!this.emailValidator.isValid(email)) {
-        return HttpResponse.badRequest(new InvalidParamError('email'));
-      }
-      if (!password) {
-        return HttpResponse.badRequest(new MissingParamError('password'));
+      const errors = this.requestValidator.validate(httpRequest.body);
+      if (errors) {
+        return HttpResponse.badRequest(new InvalidRequestError(errors));
       }
 
       const acessToken = await this.authUseCase.auth(email, password);
