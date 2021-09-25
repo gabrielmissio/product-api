@@ -1,11 +1,15 @@
 const AuthUsecase = require('./../../../../../src/domain/usecases/auth-usecase');
-const { MissingParamError, InvalidParamError } = require('./../../../../../src/domain/helpers/errors');
+const { MissingParamError } = require('./../../../../../src/domain/helpers/errors');
 
 const makeSut = () => {
   const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepositorySpy()
   const encrypterSpy = makeEncrypterSpy();
   const tokenGeneratorSpy = makeTokenGeneratorSpy();
-  const sut = new AuthUsecase(loadUserByEmailRepositorySpy, encrypterSpy, tokenGeneratorSpy);
+  const sut = new AuthUsecase({
+    loadUserByEmailRepository: loadUserByEmailRepositorySpy,
+    encrypter: encrypterSpy,
+    tokenGenerator: tokenGeneratorSpy
+  });
   return {
     sut,
     loadUserByEmailRepositorySpy,
@@ -82,19 +86,19 @@ describe('Given the auth usecase', () => {
 
   describe('And no LoadUserByEmailRepository is provided', () => {
     test('Then I expect it throws an MissingParamError', async() => {
-      const sut = new AuthUsecase();
+      const sut = new AuthUsecase({});
       const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
 
-      expect(promise).rejects.toThrow(new MissingParamError('loadUserByEmailRepository'));
+      expect(promise).rejects.toThrow();
     });
   });
 
   describe('And LoadUserByEmailRepository has no load method', () => {
     test('Then I expect it throws an MissingParamError', async() => {
-      const sut = new AuthUsecase({});
+      const sut = new AuthUsecase({LoadUserByEmailRepository: {}});
       const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
 
-      expect(promise).rejects.toThrow(new InvalidParamError('loadUserByEmailRepository'));
+      expect(promise).rejects.toThrow();
     });
   });
 
