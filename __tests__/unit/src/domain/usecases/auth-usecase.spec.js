@@ -2,19 +2,38 @@ const AuthUsecase = require('./../../../../../src/domain/usecases/auth-usecase')
 const { MissingParamError, InvalidParamError } = require('./../../../../../src/domain/helpers/errors');
 
 const makeSut = () => {
+  const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepositorySpy()
+  const encrypterSpy = makeEncrypterSpy();
+  const sut = new AuthUsecase(loadUserByEmailRepositorySpy, encrypterSpy);
+  return {
+    sut,
+    loadUserByEmailRepositorySpy,
+    encrypterSpy
+  };
+};
+
+const makeEncrypterSpy = () => {
+  class EncrypterSpy{
+    async compare(password, hashedPassword) {
+      this.password = password;
+      this.hashedPassword = hashedPassword;
+    };
+  }
+  return new EncrypterSpy(); 
+};
+
+const makeLoadUserByEmailRepositorySpy = () => {
   class LoadUserByEmailRepositorySpy {
     async load(email) {
       this.email = email;
       return this.user;
     };
   }
+  
   const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
-  loadUserByEmailRepositorySpy.user = {};
-  const sut = new AuthUsecase(loadUserByEmailRepositorySpy);
-  return {
-    sut,
-    loadUserByEmailRepositorySpy
-  };
+  loadUserByEmailRepositorySpy.user = { password: 'hashed_password' };
+
+  return loadUserByEmailRepositorySpy;
 };
 
 describe('Given the auth usecase', () => {
@@ -77,6 +96,16 @@ describe('Given the auth usecase', () => {
       const response = await sut.auth({email: 'ant@mail.com', password: 'any_password'});
 
       expect(response).toBeNull();
+    });
+  });
+
+  describe('And call Encrypter', () => {
+    test('Then I expect it calls compare method with the expected params', async() => {
+      const { sut, encrypterSpy, loadUserByEmailRepositorySpy } = makeSut();
+      await sut.auth({email: 'valid@mail.com', password: 'any_password'});
+
+      expect(encrypterSpy.password).toBe('any_password');
+      expect(encrypterSpy.hashedPassword).toBe(loadUserByEmailRepositorySpy.user.password);
     });
   });
 });
