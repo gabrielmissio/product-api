@@ -1,7 +1,9 @@
+const { MissingParamError } = require('./../helpers/errors');
+
 module.exports = class AuthUsecase {
   async auth({ email, password }) {
     if (!email) {
-      return null;
+      throw new MissingParamError('email');
     }
   }
 };
