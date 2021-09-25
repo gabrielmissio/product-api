@@ -2,13 +2,13 @@ const AuthUsecase = require('./../../../../../src/domain/usecases/auth-usecase')
 const { MissingParamError } = require('./../../../../../src/domain/helpers/errors');
 
 const makeSut = () => {
-  const sut = new AuthUsecase();
   class LoadUserByEmailRepositorySpy {
     async load(email) {
       this.email = email;
     };
   }
   const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
+  const sut = new AuthUsecase(loadUserByEmailRepositorySpy);
   return {
     sut,
     loadUserByEmailRepositorySpy
@@ -34,8 +34,7 @@ describe('Given the auth usecase', () => {
 
   describe('And call LoadUserByEmailRepository', () => {
     test('Then I expect it calls load method from loadUserByEmailRepository with the expected params', async() => {
-      const { loadUserByEmailRepositorySpy } = makeSut();
-      const sut = new AuthUsecase(loadUserByEmailRepositorySpy);
+      const { sut, loadUserByEmailRepositorySpy } = makeSut();
       await sut.auth({email: 'valid@mail.com', password: 'any_password'});
 
       expect(loadUserByEmailRepositorySpy.email).toBe('valid@mail.com');
