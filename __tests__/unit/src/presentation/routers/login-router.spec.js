@@ -37,20 +37,6 @@ const makeRequestValidatorSpyWithError = () => {
   return new RequestValidator();
 };
 
-const makeRequestValidator = () => {
-  class RequestValidator {
-    constructor(schema) {
-      this.schema = schema;
-    };
-    validate(payload) {
-      const { error } = this.schema.validate(payload, { abortEarly: false });
-      return error;
-    };
-  };
-
-  return new RequestValidator(loginValidator);
-};
-
 const makeAuthUseCaseSpy = () => {
   class AuthUseCaseSpy {
     async auth({ email, password }) {
