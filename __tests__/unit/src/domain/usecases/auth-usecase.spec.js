@@ -16,4 +16,12 @@ describe('Given the auth usecase', () => {
       expect(promise).rejects.toThrow(new MissingParamError('email'));
     });
   });
+
+  describe('And no password is provided', () => {
+    test('Then I expect it throws a MissingParamError', async() => {
+      const { sut } = makeSut();
+      const promise = sut.auth({ email: 'any_email'});
+      expect(promise).rejects.toThrow(new MissingParamError('password'));
+    });
+  });
 });

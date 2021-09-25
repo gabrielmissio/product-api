@@ -5,5 +5,8 @@ module.exports = class AuthUsecase {
     if (!email) {
       throw new MissingParamError('email');
     }
+    if (!password) {
+      throw new MissingParamError('password');
+    }
   }
 };
