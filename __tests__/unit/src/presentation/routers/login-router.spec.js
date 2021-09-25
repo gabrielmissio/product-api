@@ -53,7 +53,7 @@ const makeRequestValidator = () => {
 
 const makeAuthUseCaseSpy = () => {
   class AuthUseCaseSpy {
-    async auth(email, password) {
+    async auth({ email, password }) {
       this.email = email;
       this.password = password;
       return this.acessToken;

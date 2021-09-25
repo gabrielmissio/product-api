@@ -9,13 +9,12 @@ module.exports = class LoginRouter {
 
   async route(httpRequest) {
     try {
-      const { email, password } = httpRequest.body;
       const errors = this.requestValidator.validate(httpRequest.body);
       if (errors) {
         return HttpResponse.badRequest(new InvalidRequestError(errors));
       }
 
-      const acessToken = await this.authUseCase.auth(email, password);
+      const acessToken = await this.authUseCase.auth(httpRequest.body);
       if (!acessToken) {
         return HttpResponse.unauthorized();
       }
