@@ -58,4 +58,13 @@ describe('Given the auth usecase', () => {
       expect(promise).rejects.toThrow(new InvalidParamError('loadUserByEmailRepository'));
     });
   });
+
+  describe('And loadUserByEmailRepository returns null', () => {
+    test('Then I expect it returns null', async() => {
+      const { sut } = makeSut();
+      const response = await sut.auth({email: 'ant@mail.com', password: 'any_password'});
+
+      expect(response).toBeNull();
+    });
+  });
 });

@@ -19,6 +19,9 @@ module.exports = class AuthUsecase {
       throw new InvalidParamError('loadUserByEmailRepository');
     }
 
-    await this.loadUserByEmailRepository.load(email);
+    const user = await this.loadUserByEmailRepository.load(email);
+    if (!user) {
+      return null;
+    }
   }
 };
