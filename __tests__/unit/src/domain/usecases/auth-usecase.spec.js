@@ -40,4 +40,13 @@ describe('Given the auth usecase', () => {
       expect(loadUserByEmailRepositorySpy.email).toBe('valid@mail.com');
     });
   });
+
+  describe('And no LoadUserByEmailRepository is provided', () => {
+    test('Then I expect it throws an MissingParamError', async() => {
+      const sut = new AuthUsecase();
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow(new MissingParamError('loadUserByEmailRepository'));
+    });
+  });
 });
