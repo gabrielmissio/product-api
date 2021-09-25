@@ -1,4 +1,4 @@
-const { MissingParamError } = require('./../helpers/errors');
+const { MissingParamError, InvalidParamError } = require('./../helpers/errors');
 
 module.exports = class AuthUsecase {
   constructor(loadUserByEmailRepository) {
@@ -14,6 +14,9 @@ module.exports = class AuthUsecase {
     }
     if (!this.loadUserByEmailRepository) {
       throw new MissingParamError('loadUserByEmailRepository');
+    }
+    if (!this.loadUserByEmailRepository.load) {
+      throw new InvalidParamError('loadUserByEmailRepository');
     }
 
     await this.loadUserByEmailRepository.load(email);
