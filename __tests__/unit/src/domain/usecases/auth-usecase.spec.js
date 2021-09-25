@@ -5,9 +5,11 @@ const makeSut = () => {
   class LoadUserByEmailRepositorySpy {
     async load(email) {
       this.email = email;
+      return this.user;
     };
   }
   const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
+  loadUserByEmailRepositorySpy.user = {};
   const sut = new AuthUsecase(loadUserByEmailRepositorySpy);
   return {
     sut,
@@ -59,7 +61,17 @@ describe('Given the auth usecase', () => {
     });
   });
 
-  describe('And loadUserByEmailRepository returns null', () => {
+  describe('And a nonexistent email is provided', () => {
+    test('Then I expect it returns null', async() => {
+      const { sut, loadUserByEmailRepositorySpy } = makeSut();
+      loadUserByEmailRepositorySpy.user = null;
+      const response = await sut.auth({email: 'ant@mail.com', password: 'any_password'});
+
+      expect(response).toBeNull();
+    });
+  });
+
+  describe('And an incorrect password is provided', () => {
     test('Then I expect it returns null', async() => {
       const { sut } = makeSut();
       const response = await sut.auth({email: 'ant@mail.com', password: 'any_password'});
