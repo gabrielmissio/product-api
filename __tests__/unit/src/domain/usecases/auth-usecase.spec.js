@@ -84,8 +84,17 @@ describe('Given the auth usecase', () => {
     });
   });
 
+  describe('And no dependency is provided', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase();
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
   describe('And no LoadUserByEmailRepository is provided', () => {
-    test('Then I expect it throws an MissingParamError', async() => {
+    test('Then I expect it throws an Error', async() => {
       const sut = new AuthUsecase({});
       const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
 
@@ -94,7 +103,7 @@ describe('Given the auth usecase', () => {
   });
 
   describe('And LoadUserByEmailRepository has no load method', () => {
-    test('Then I expect it throws an MissingParamError', async() => {
+    test('Then I expect it throws an Error', async() => {
       const sut = new AuthUsecase({LoadUserByEmailRepository: {}});
       const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
 
