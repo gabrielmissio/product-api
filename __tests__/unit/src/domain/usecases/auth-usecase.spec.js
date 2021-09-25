@@ -4,12 +4,24 @@ const { MissingParamError, InvalidParamError } = require('./../../../../../src/d
 const makeSut = () => {
   const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepositorySpy()
   const encrypterSpy = makeEncrypterSpy();
-  const sut = new AuthUsecase(loadUserByEmailRepositorySpy, encrypterSpy);
+  const tokenGeneratorSpy = makeTokenGeneratorSpy();
+  const sut = new AuthUsecase(loadUserByEmailRepositorySpy, encrypterSpy, tokenGeneratorSpy);
   return {
     sut,
     loadUserByEmailRepositorySpy,
-    encrypterSpy
+    encrypterSpy,
+    tokenGeneratorSpy
   };
+};
+
+const makeTokenGeneratorSpy = () => {
+  class TokenGeneratorSpy{
+    async generate(userId) {
+      this.userId = userId;
+    };
+  }
+
+  return new TokenGeneratorSpy();
 };
 
 const makeEncrypterSpy = () => {
@@ -17,9 +29,12 @@ const makeEncrypterSpy = () => {
     async compare(password, hashedPassword) {
       this.password = password;
       this.hashedPassword = hashedPassword;
+      return this.isValid;
     };
   }
-  return new EncrypterSpy(); 
+  const encrypterSpy = new EncrypterSpy();
+  encrypterSpy.isValid = true;
+  return encrypterSpy;
 };
 
 const makeLoadUserByEmailRepositorySpy = () => {
@@ -31,7 +46,7 @@ const makeLoadUserByEmailRepositorySpy = () => {
   }
   
   const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
-  loadUserByEmailRepositorySpy.user = { password: 'hashed_password' };
+  loadUserByEmailRepositorySpy.user = { id: 'valid_id', password: 'hashed_password' };
 
   return loadUserByEmailRepositorySpy;
 };
@@ -92,7 +107,8 @@ describe('Given the auth usecase', () => {
 
   describe('And an incorrect password is provided', () => {
     test('Then I expect it returns null', async() => {
-      const { sut } = makeSut();
+      const { sut, encrypterSpy } = makeSut();
+      encrypterSpy.isValid = false;
       const response = await sut.auth({email: 'ant@mail.com', password: 'any_password'});
 
       expect(response).toBeNull();
@@ -106,6 +122,15 @@ describe('Given the auth usecase', () => {
 
       expect(encrypterSpy.password).toBe('any_password');
       expect(encrypterSpy.hashedPassword).toBe(loadUserByEmailRepositorySpy.user.password);
+    });
+  });
+
+  describe('And call TokenGenerator', () => {
+    test('Then I expect it calls generate method with the expected params', async() => {
+      const { sut, tokenGeneratorSpy, loadUserByEmailRepositorySpy } = makeSut();
+      await sut.auth({email: 'valid@mail.com', password: 'any_password'});
+
+      expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
     });
   });
 });
