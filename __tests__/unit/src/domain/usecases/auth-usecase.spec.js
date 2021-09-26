@@ -78,6 +78,16 @@ const makeLoadUserByEmailRepositorySpy = () => {
   return loadUserByEmailRepositorySpy;
 };
 
+const makeLoadUserByEmailRepositorySpyWithError = () => {
+  class LoadUserByEmailRepositorySpyWithError {
+    async load() {
+      throw new Error('any_error');
+    };
+  }
+  
+  return new LoadUserByEmailRepositorySpyWithError();
+};
+
 describe('Given the auth usecase', () => {
   describe('And no email is provided', () => {
     test('Then I expect it throws a MissingParamError', async() => {
@@ -146,6 +156,17 @@ describe('Given the auth usecase', () => {
   describe('And LoadUserByEmailRepository has no load method', () => {
     test('Then I expect it throws an Error', async() => {
       const sut = new AuthUsecase({LoadUserByEmailRepository: {}});
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('And LoadUserByEmailRepository throws', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpyWithError(),
+      });
       const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
 
       expect(promise).rejects.toThrow();
