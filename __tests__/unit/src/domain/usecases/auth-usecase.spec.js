@@ -288,6 +288,19 @@ describe('Given the auth usecase', () => {
     });
   });
 
+  describe('And UpdateAcessTokenRepository is not provided', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: makeEncrypterSpy(),
+        tokenGenerator: makeTokenGeneratorSpy(),
+      });
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
   describe('And call UpdateAcessTokenRepository with valid params', () => {
     test('Then I expect it calls save method with the expected params', async() => {
       const { sut, tokenGeneratorSpy, loadUserByEmailRepositorySpy, updateAcessTokenRepositorySpy } = makeSut();
