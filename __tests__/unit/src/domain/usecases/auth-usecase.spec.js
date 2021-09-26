@@ -75,42 +75,6 @@ describe('Given the auth usecase', () => {
     });
   });
 
-  describe('And call LoadUserByEmailRepository', () => {
-    test('Then I expect it calls load method from loadUserByEmailRepository with the expected params', async() => {
-      const { sut, loadUserByEmailRepositorySpy } = makeSut();
-      await sut.auth({email: 'valid@mail.com', password: 'any_password'});
-
-      expect(loadUserByEmailRepositorySpy.email).toBe('valid@mail.com');
-    });
-  });
-
-  describe('And no dependency is provided', () => {
-    test('Then I expect it throws an Error', async() => {
-      const sut = new AuthUsecase();
-      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
-
-      expect(promise).rejects.toThrow();
-    });
-  });
-
-  describe('And no LoadUserByEmailRepository is provided', () => {
-    test('Then I expect it throws an Error', async() => {
-      const sut = new AuthUsecase({});
-      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
-
-      expect(promise).rejects.toThrow();
-    });
-  });
-
-  describe('And LoadUserByEmailRepository has no load method', () => {
-    test('Then I expect it throws an Error', async() => {
-      const sut = new AuthUsecase({LoadUserByEmailRepository: {}});
-      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
-
-      expect(promise).rejects.toThrow();
-    });
-  });
-
   describe('And a nonexistent email is provided', () => {
     test('Then I expect it returns null', async() => {
       const { sut, loadUserByEmailRepositorySpy } = makeSut();
@@ -131,7 +95,76 @@ describe('Given the auth usecase', () => {
     });
   });
 
-  describe('And call Encrypter', () => {
+  describe('And correct credentials are provided', () => {
+    test('Then I expect it returns an acess token', async() => {
+      const { sut, tokenGeneratorSpy } = makeSut();
+      const acessToken = await sut.auth({email: 'valid@mail.com', password: 'valid_password'});
+
+      expect(acessToken).toBe(tokenGeneratorSpy.acessToken);
+      expect(acessToken).toBeTruthy();
+    });
+  });
+
+  describe('And no dependency is provided', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase();
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+  
+  describe('And no LoadUserByEmailRepository is provided', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({});
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('And LoadUserByEmailRepository has no load method', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({LoadUserByEmailRepository: {}});
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('And call LoadUserByEmailRepository with valid params', () => {
+    test('Then I expect it calls load method from loadUserByEmailRepository with the expected params', async() => {
+      const { sut, loadUserByEmailRepositorySpy } = makeSut();
+      await sut.auth({email: 'valid@mail.com', password: 'any_password'});
+
+      expect(loadUserByEmailRepositorySpy.email).toBe('valid@mail.com');
+    });
+  });
+
+  describe('And no Encrypter is provided', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy()
+      });
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('And Encrypter has no compare method', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: {}
+      });
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('And call Encrypter with valid params', () => {
     test('Then I expect it calls compare method with the expected params', async() => {
       const { sut, encrypterSpy, loadUserByEmailRepositorySpy } = makeSut();
       await sut.auth({email: 'valid@mail.com', password: 'any_password'});
@@ -141,22 +174,37 @@ describe('Given the auth usecase', () => {
     });
   });
 
-  describe('And call TokenGenerator', () => {
+  describe('And no TokenGenerator is provided', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: makeEncrypterSpy()
+      });
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('And TokenGenerator has no generate method', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: makeEncrypterSpy(),
+        tokenGenerator: {}
+      });
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('And call TokenGenerator with valid params', () => {
     test('Then I expect it calls generate method with the expected params', async() => {
       const { sut, tokenGeneratorSpy, loadUserByEmailRepositorySpy } = makeSut();
       await sut.auth({email: 'valid@mail.com', password: 'any_password'});
 
       expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
-    });
-  });
-
-  describe('And correct credentials are provided', () => {
-    test('Then I expect it returns an acess token', async() => {
-      const { sut, tokenGeneratorSpy } = makeSut();
-      const acessToken = await sut.auth({email: 'valid@mail.com', password: 'valid_password'});
-
-      expect(acessToken).toBe(tokenGeneratorSpy.acessToken);
-      expect(acessToken).toBeTruthy();
     });
   });
 });
