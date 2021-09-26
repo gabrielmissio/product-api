@@ -31,6 +31,18 @@ const makeTokenGeneratorSpy = () => {
   return tokenGeneratorSpy;
 };
 
+const makeTokenGeneratorSpyWithError = () => {
+  class TokenGeneratorSpy{
+    async generate() {
+      throw new Error('any_error');
+    };
+  }
+  const tokenGeneratorSpy = new TokenGeneratorSpy();
+  tokenGeneratorSpy.acessToken = 'acess_token';
+
+  return tokenGeneratorSpy;
+};
+
 const makeEncrypterSpy = () => {
   class EncrypterSpy{
     async compare(password, hashedPassword) {
@@ -192,6 +204,19 @@ describe('Given the auth usecase', () => {
         loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
         encrypter: makeEncrypterSpy(),
         tokenGenerator: {}
+      });
+      const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('And TokenGenerator throws', () => {
+    test('Then I expect it throws an Error', async() => {
+      const sut = new AuthUsecase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: makeEncrypterSpy(),
+        tokenGenerator: makeTokenGeneratorSpyWithError()
       });
       const promise = sut.auth({email: 'any@mail.com', password: 'any_password'});
 
