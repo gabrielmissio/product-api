@@ -5,17 +5,31 @@ const makeSut = () => {
   const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepositorySpy()
   const encrypterSpy = makeEncrypterSpy();
   const tokenGeneratorSpy = makeTokenGeneratorSpy();
+  const updateAcessTokenRepositorySpy = makeUpdateAcessTokenRepositorySpy();
   const sut = new AuthUsecase({
     loadUserByEmailRepository: loadUserByEmailRepositorySpy,
     encrypter: encrypterSpy,
-    tokenGenerator: tokenGeneratorSpy
+    tokenGenerator: tokenGeneratorSpy,
+    updateAcessTokenRepository: updateAcessTokenRepositorySpy
   });
   return {
     sut,
     loadUserByEmailRepositorySpy,
     encrypterSpy,
-    tokenGeneratorSpy
+    tokenGeneratorSpy,
+    updateAcessTokenRepositorySpy
   };
+};
+
+const makeUpdateAcessTokenRepositorySpy = () => {
+  class UpdateAcessTokenRepositorySpy{
+    async save(userId, acessToken) {
+      this.userId = userId;
+      this.acessToken = acessToken;
+    };
+  }
+
+  return new UpdateAcessTokenRepositorySpy();
 };
 
 const makeTokenGeneratorSpy = () => {
@@ -271,6 +285,16 @@ describe('Given the auth usecase', () => {
       await sut.auth({email: 'valid@mail.com', password: 'any_password'});
 
       expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
+    });
+  });
+
+  describe('And call UpdateAcessTokenRepository with valid params', () => {
+    test('Then I expect it calls save method with the expected params', async() => {
+      const { sut, tokenGeneratorSpy, loadUserByEmailRepositorySpy, updateAcessTokenRepositorySpy } = makeSut();
+      await sut.auth({email: 'valid@mail.com', password: 'any_password'});
+
+      expect(updateAcessTokenRepositorySpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
+      expect(updateAcessTokenRepositorySpy.acessToken).toBe(tokenGeneratorSpy.acessToken);
     });
   });
 });
