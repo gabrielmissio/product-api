@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const Encrypter = require('./../../../../src/utils/encrypter');
+const Encrypter = require('../../../../src/utils/helpers/encrypter');
 
 const makeSut = () => {
   const sut = new Encrypter();

@@ -1,5 +1,5 @@
 const AuthUsecase = require('./../../../../../src/domain/usecases/auth-usecase');
-const { MissingParamError } = require('./../../../../../src/domain/helpers/errors');
+const { MissingParamError } = require('./../../../../../src/utils/errors');
 
 const makeSut = () => {
   const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepositorySpy()
