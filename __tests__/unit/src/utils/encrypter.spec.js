@@ -28,4 +28,14 @@ describe('Given the encrypter', () => {
       expect(isValid).toBe(false);
     });
   });
+
+  describe('And calls compare method from bcrypt', () => {
+    test('Then I expect it calls bcrypt with expected params', async() => {
+      const { sut } = makeSut();
+      await sut.compare('any_value', 'any_hashed_value');
+
+      expect(bcrypt.value).toBe('any_value');
+      expect(bcrypt.hash).toBe('any_hashed_value');
+    });
+  });
 });
