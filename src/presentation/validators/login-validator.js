@@ -1,6 +1,5 @@
 const Joi = require('joi');
-
-const loginValidator = Joi.object({
+const schema = Joi.object({
   email: Joi.string()
     .email()
     .required(),
@@ -8,4 +7,9 @@ const loginValidator = Joi.object({
     .required()
 });
 
-module.exports = loginValidator;
+module.exports = class LoginValidator {
+  validate(params) {
+    const { error } = schema.validate(params);
+    return error;
+  };
+};
