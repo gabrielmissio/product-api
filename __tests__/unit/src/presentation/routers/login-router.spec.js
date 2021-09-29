@@ -1,7 +1,7 @@
 const LoginRouter = require('../../../../../src/presentation/routers/login-router');
-const UnauthorizedError = require('../../../../../src/presentation/helpers/errors/unauthorized-error');
-const InternalError = require('../../../../../src/presentation/helpers/errors/internal-error');
-const InvalidRequestError = require('../../../../../src/presentation/helpers/errors/invalid-request-error');
+const UnauthorizedError = require('../../../../../src/presentation/errors/unauthorized-error');
+const InternalError = require('../../../../../src/presentation/errors/internal-error');
+const InvalidRequestError = require('../../../../../src/presentation/errors/invalid-request-error');
 
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCaseSpy();

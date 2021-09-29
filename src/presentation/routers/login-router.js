@@ -1,5 +1,5 @@
-const HttpResponse = require('../helpers/utilis/http-response');
-const InvalidRequestError = require('./../helpers/errors/invalid-request-error');
+const HttpResponse = require('../helpers/http-response');
+const InvalidRequestError = require('./../errors/invalid-request-error');
 
 module.exports = class LoginRouter {
   constructor(authUseCase, requestValidator) {
