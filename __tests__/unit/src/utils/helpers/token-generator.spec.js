@@ -49,4 +49,14 @@ describe('Given the TokenGenerator', () => {
       
     });
   });
+
+  describe('And no value is provided', () => {
+    test('Then I expect it throws an MissingParamError', async() => {
+      const { sut } = makeSut();
+      const promise = sut.generate();
+
+      expect(promise).rejects.toThrow(new MissingParamError('value'));
+      
+    });
+  });
 });

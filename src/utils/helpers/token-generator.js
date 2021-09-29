@@ -11,6 +11,10 @@ module.exports = class TokenGenerator {
       throw new MissingParamError('secret');
     }
 
+    if (!value) {
+      throw new MissingParamError('value');
+    }
+
     return jwt.sign(value, this.secret);
   };
 };
