@@ -26,6 +26,10 @@ describe('Given the LoadUserByEmail Repository', () => {
     await client.close();
   });
 
+  beforeEach(async () => {
+    await db.collection('users').deleteMany()
+  });
+
   describe('And provide a non-existent email', () => {
     test('Then I expect it returns null', async() => {
       const userModel = db.collection('users');
