@@ -27,6 +27,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "joi": "^17.4.2",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.1.2"
   }
 }
