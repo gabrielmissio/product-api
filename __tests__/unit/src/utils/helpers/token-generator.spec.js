@@ -1,15 +1,8 @@
 const jwt = require('jsonwebtoken');
+const TokenGenerator = require('./../../../../../src/utils/helpers/token-generator');
+
 
 const makeSut = () => {
-  class TokenGenerator {
-    constructor(secret) {
-      this.secret = secret;
-    }
-
-    async generate(value) {
-      return jwt.sign(value, this.secret);
-    };
-  }
   const sut = new TokenGenerator('secret');
 
   return {
