@@ -23,15 +23,22 @@ describe('Given the TokenGenerator', () => {
       expect(token).toBeNull();
     });
   });
-});
 
-describe('Given the TokenGenerator', () => {
   describe('And JWT returns a token', () => {
     test('Then I expect it returns a token', async() => {
       const { sut } = makeSut();
       const token = await sut.generate('any_value');
 
       expect(token).toBe(jwt.token);
+    });
+  });
+
+  describe('And calls sign method', () => {
+    test('Then I expect it calls sign method with expected params', async() => {
+      const { sut } = makeSut();
+      await sut.generate('any_value');
+
+      expect(jwt.value).toBe('any_value');
     });
   });
 });
