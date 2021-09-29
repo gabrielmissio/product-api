@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/gabrielmissio/product-api#readme",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^2.1.0",
     "eslint": "7.32.0",
     "eslint-config-standard": "16.0.3",
     "husky": "^7.0.0",
