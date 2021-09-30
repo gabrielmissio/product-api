@@ -1,5 +1,6 @@
 module.exports = {
   coverageDirectory: 'coverage',
   testEnvironment: 'node',
-  preset: '@shelf/jest-mongodb'
+  preset: '@shelf/jest-mongodb',
+  watchPathIgnorePatterns: ['globalConfig']
 };
