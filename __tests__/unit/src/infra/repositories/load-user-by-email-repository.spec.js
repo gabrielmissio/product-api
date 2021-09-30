@@ -56,4 +56,13 @@ describe('Given the LoadUserByEmail Repository', () => {
       expect(promise).rejects.toThrow(new MissingParamError('userModel'));
     });
   });
+
+  describe('And no email is provided', () => {
+    test('Then I expect it returns a MissingParamError', async() => {
+      const { sut } = makeSut();
+      const promise = sut.load()
+
+      expect(promise).rejects.toThrow(new MissingParamError('email'));
+    });
+  });
 });
