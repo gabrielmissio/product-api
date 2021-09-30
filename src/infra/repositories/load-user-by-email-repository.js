@@ -4,7 +4,11 @@ module.exports = class LoadUserByEmailRepository {
   }
 
   async load(email) {
-    const user = this.userModel.findOne({ email });
+    const projection = {
+      password: 1
+    };
+
+    const user = this.userModel.findOne({ email }, projection);
     return user;
   };
 };
