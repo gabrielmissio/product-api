@@ -2,17 +2,17 @@ const MongoHelper = require('./../../../../../src/infra/helpers/mongo-helper');
 const { MissingParamError } = require('./../../../../../src/utils/errors');
 let db;
 
-class UpdateAcessTokenRepository {
+class updateAccessTokenRepository {
   constructor(userModel) {
     this.userModel = userModel;
   }
 
-  async save(userId, acessToken) {
+  async save(userId, AccessToken) {
     await this.userModel.updateOne({
       _id: userId
     }, {
       $set: {
-        acessToken
+        AccessToken
       }
     });
   };
@@ -20,7 +20,7 @@ class UpdateAcessTokenRepository {
 
 const makeSut = () => {
   const userModel = db.collection('users');
-  const sut = new UpdateAcessTokenRepository(userModel);
+  const sut = new updateAccessTokenRepository(userModel);
 
   return {
     sut,
@@ -43,7 +43,7 @@ describe('Given the LoadUserByEmail Repository', () => {
   });
 
   describe('And calls the save() method', () => {
-    test('Then I expect update the user acessToken', async() => {
+    test('Then I expect update the user AccessToken', async() => {
       const { sut, userModel } = makeSut();
       const fakeUser = await userModel.insertOne({
         email: 'valid@email.com',
@@ -54,7 +54,7 @@ describe('Given the LoadUserByEmail Repository', () => {
       const _id = fakeUser.insertedId;
       await sut.save(_id, 'valid_token');
       const updatedFakeUser = await userModel.findOne({ _id });
-      expect(updatedFakeUser.acessToken).toBe('valid_token');
+      expect(updatedFakeUser.AccessToken).toBe('valid_token');
     });
   });  
 });

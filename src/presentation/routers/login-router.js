@@ -14,11 +14,11 @@ module.exports = class LoginRouter {
         return HttpResponse.badRequest(new InvalidRequestError(errors));
       }
 
-      const acessToken = await this.authUseCase.auth(httpRequest.body);
-      if (!acessToken) {
+      const AccessToken = await this.authUseCase.auth(httpRequest.body);
+      if (!AccessToken) {
         return HttpResponse.unauthorized();
       }
-      return HttpResponse.ok({ acessToken });
+      return HttpResponse.ok({ AccessToken });
     } catch (error) {
       return HttpResponse.internalError();
     };

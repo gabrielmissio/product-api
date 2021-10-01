@@ -7,7 +7,7 @@ const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCaseSpy();
   const requestValidatorSpy = makeRequestValidatorSpy();
   const sut = new LoginRouter(authUseCaseSpy, requestValidatorSpy);
-  authUseCaseSpy.acessToken = 'valid_acess_token';
+  authUseCaseSpy.AccessToken = 'valid_acess_token';
   return {
     sut,
     authUseCaseSpy,
@@ -42,7 +42,7 @@ const makeAuthUseCaseSpy = () => {
     async auth({ email, password }) {
       this.email = email;
       this.password = password;
-      return this.acessToken;
+      return this.AccessToken;
     }
   }
 
@@ -143,14 +143,14 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(200);
-      expect(httpResponse.body.acessToken).toEqual(authUseCaseSpy.acessToken);
+      expect(httpResponse.body.AccessToken).toEqual(authUseCaseSpy.AccessToken);
     });
   });
 
   describe('And pass invalid credentials', () => {
     test('Then I expect it returns 401', async() => {
       const { sut, authUseCaseSpy } = makeSut();
-      authUseCaseSpy.acessToken = null;
+      authUseCaseSpy.AccessToken = null;
       const httpRequest = {
         body: {
           email: 'valid@mail.com',
