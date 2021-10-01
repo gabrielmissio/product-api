@@ -1,6 +1,10 @@
 const MongoHelper = require('./../../../../../src/infra/helpers/mongo-helper');
 
 describe('Given the mongo helper', () => {
+  afterAll(async () => {
+    await MongoHelper.disconnect();
+  });
+
   describe('And the db is disconnected', () => {
     test('Then I reconnect when getDb() is invoked', async() => {
       const sut = MongoHelper;
