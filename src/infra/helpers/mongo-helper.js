@@ -13,6 +13,8 @@ module.exports = {
 
   async disconnect() {
     await this.client.close();
+    this.client = null;
+    this.db = null;
   },
 
   async getDb() {
