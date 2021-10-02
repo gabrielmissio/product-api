@@ -74,7 +74,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
-      expect(httpResponse.body).toEqual(new InvalidRequestError('ValidationError: "email" is required'));
+      expect(httpResponse.body.error).toBe(new InvalidRequestError('ValidationError: "email" is required').message);
     });
   });
 
@@ -89,7 +89,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
-      expect(httpResponse.body).toEqual(new InvalidRequestError('ValidationError: "password" is required'));
+      expect(httpResponse.body.error).toBe(new InvalidRequestError('ValidationError: "password" is required').message);
     });
   });
 
@@ -98,7 +98,7 @@ describe('Given the login routes', () => {
       const { sut } = makeSut();
       const httpResponse = await sut.route();
       expect(httpResponse.statusCode).toBe(500);
-      expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body.error).toBe(new InternalError().message);
     });
   });
 
@@ -107,7 +107,7 @@ describe('Given the login routes', () => {
       const { sut } = makeSut();
       const httpResponse = await sut.route();
       expect(httpResponse.statusCode).toBe(500);
-      expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body.error).toBe(new InternalError().message);
     });
   });
 
@@ -162,7 +162,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(401);
-      expect(httpResponse.body).toEqual(new UnauthorizedError());
+      expect(httpResponse.body.error).toBe(new UnauthorizedError().message);
     });
   });
 
@@ -177,7 +177,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
-      expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body.error).toBe(new InternalError().message);
     });
   });
 
@@ -196,7 +196,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
-      expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body.error).toEqual(new InternalError().message);
     });
   });
 
@@ -216,7 +216,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
-      expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body.error).toEqual(new InternalError().message);
     });
   });
 
@@ -232,7 +232,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(400);
-      expect(httpResponse.body).toEqual(new InvalidRequestError('ValidationError: "email" is required'));
+      expect(httpResponse.body.error).toBe(new InvalidRequestError('ValidationError: "email" is required').message);
     });
   });
 
@@ -250,7 +250,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
-      expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body.error).toEqual(new InternalError().message);
     });
   });
 
@@ -269,7 +269,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
-      expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body.error).toEqual(new InternalError().message);
     });
   });
 
@@ -289,7 +289,7 @@ describe('Given the login routes', () => {
       };
       const httpResponse = await sut.route(httpRequest);
       expect(httpResponse.statusCode).toBe(500);
-      expect(httpResponse.body).toEqual(new InternalError());
+      expect(httpResponse.body.error).toEqual(new InternalError().message);
     });
   });
 });
