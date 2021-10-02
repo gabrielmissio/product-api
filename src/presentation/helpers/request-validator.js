@@ -1,4 +1,4 @@
-module.exports = class RequestValidator {
+class RequestValidator {
   constructor(schema) {
     this.schema = schema;
   };
@@ -8,3 +8,5 @@ module.exports = class RequestValidator {
     return error;
   };
 };
+
+module.exports = RequestValidator;

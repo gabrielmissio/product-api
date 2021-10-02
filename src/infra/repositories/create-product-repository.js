@@ -1,7 +1,7 @@
 const { MissingParamError } = require('../../utils/errors');
 const MongoHelper = require('./../helpers/mongo-helper');
 
-module.exports = class CreateProductRepository {
+class CreateProductRepository {
   async create(product) {
     if (!product) {
       throw new MissingParamError('product');
@@ -13,3 +13,5 @@ module.exports = class CreateProductRepository {
     return newProduct;
   };
 };
+
+module.exports = CreateProductRepository;

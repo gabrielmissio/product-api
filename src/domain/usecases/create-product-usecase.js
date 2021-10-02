@@ -1,6 +1,6 @@
 const { MissingParamError } = require('./../../utils/errors');
 
-module.exports = class CreateProductUsecase {
+class CreateProductUsecase {
   constructor({ createProductRepository } = {}) {
     this.createProductRepository = createProductRepository;
   };
@@ -14,3 +14,5 @@ module.exports = class CreateProductUsecase {
     return newProduct;
   };
 };
+
+module.exports = CreateProductUsecase;

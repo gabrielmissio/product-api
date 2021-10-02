@@ -1,7 +1,7 @@
 const HttpResponse = require('../helpers/http-response');
 const InvalidRequestError = require('./../errors/invalid-request-error');
 
-module.exports = class LoginRouter {
+class LoginRouter {
   constructor({ authUseCase, requestValidator } = {}) {
     this.authUseCase = authUseCase;
     this.requestValidator = requestValidator;
@@ -24,3 +24,5 @@ module.exports = class LoginRouter {
     };
   };
 };
+
+module.exports = LoginRouter;

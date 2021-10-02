@@ -1,7 +1,7 @@
 const UnauthorizedError = require('../errors/unauthorized-error');
 const InternalError = require('../errors/internal-error');
 
-module.exports = class HttpResponse {
+class HttpResponse {
   static badRequest(error) {
     return {
       statusCode: 400,
@@ -43,3 +43,5 @@ module.exports = class HttpResponse {
     };
   };
 };
+
+module.exports = HttpResponse;
