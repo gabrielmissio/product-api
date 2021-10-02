@@ -35,4 +35,11 @@ module.exports = class HttpResponse {
       body: data
     };
   };
+
+  static created(data) {
+    return {
+      statusCode: 201,
+      body: data
+    };
+  };
 };
