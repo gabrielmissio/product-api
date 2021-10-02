@@ -4,13 +4,7 @@ const UpdateAccessTokenRepository = require('./../../../../../src/infra/reposito
 let db;
 
 const makeSut = () => {
-  const userModel = db.collection('users');
-  const sut = new UpdateAccessTokenRepository(userModel);
-
-  return {
-    sut,
-    userModel
-  };
+  return new UpdateAccessTokenRepository();
 };
 
 describe('Given the LoadUserByEmail Repository', () => {
@@ -29,8 +23,8 @@ describe('Given the LoadUserByEmail Repository', () => {
 
   describe('And calls the save() method', () => {
     test('Then I expect update the user AccessToken', async() => {
-      const { sut, userModel } = makeSut();
-      const fakeUser = await userModel.insertOne({
+      const sut = makeSut();
+      const fakeUser = await db.collection('users').insertOne({
         email: 'valid@email.com',
         name: 'any_name',
         password: 'any_hashed_password'
@@ -38,23 +32,14 @@ describe('Given the LoadUserByEmail Repository', () => {
 
       const _id = fakeUser.insertedId;
       await sut.save(_id, 'valid_token');
-      const updatedFakeUser = await userModel.findOne({ _id });
+      const updatedFakeUser = await db.collection('users').findOne({ _id });
       expect(updatedFakeUser.accessToken).toBe('valid_token');
     });
   });
   
-  describe('And no userModel is provided', () => {
-    test('Then I expect it returns a MissingParamError', async() => {
-      const sut = new UpdateAccessTokenRepository();
-      const promise = sut.save('any_id', 'valid_token');
-
-      expect(promise).rejects.toThrow(new MissingParamError('userModel'));
-    });
-  });
-
   describe('And no access token is provided', () => {
     test('Then I expect it returns a MissingParamError', async() => {
-      const { sut } = makeSut();
+      const sut = makeSut();
       const promise = sut.save('any_id');
 
       expect(promise).rejects.toThrow(new MissingParamError('accessToken'));
@@ -63,7 +48,7 @@ describe('Given the LoadUserByEmail Repository', () => {
 
   describe('And no userId is provided', () => {
     test('Then I expect it returns a MissingParamError', async() => {
-      const { sut } = makeSut();
+      const sut = makeSut();
       const promise = sut.save();
 
       expect(promise).rejects.toThrow(new MissingParamError('userId'));
