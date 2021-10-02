@@ -2,7 +2,8 @@ class ExpressRouterAdapter {
   static adapt(router) {
     return async(req, res) => {
       const httpRequest = {
-        body: req.body
+        body: req.body,
+        query: req.query
       };
 
       const httpResponse = await router.route(httpRequest);
