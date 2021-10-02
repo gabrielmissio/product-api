@@ -7,9 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/main",
-    "test": "jest --color",
+    "test": "jest --color --runInBand",
     "prepare": "husky install",
-    "test:ci": "jest --color --coverage --noStackTrace --silent"
+    "test:ci": "jest --color --runInBand --coverage --noStackTrace --silent"
   },
   "repository": {
     "type": "git",
