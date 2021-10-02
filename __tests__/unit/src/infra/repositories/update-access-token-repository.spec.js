@@ -7,16 +7,19 @@ class UpdateAccessTokenRepository {
     this.userModel = userModel;
   }
 
-  async save(userId, AccessToken) {
+  async save(userId, accessToken) {
     if (!this.userModel) {
       throw new MissingParamError('userModel');
+    }
+    if (!accessToken) {
+      throw new MissingParamError('accessToken');
     }
 
     await this.userModel.updateOne({
       _id: userId
     }, {
       $set: {
-        AccessToken
+        accessToken
       }
     });
   };
@@ -58,7 +61,7 @@ describe('Given the LoadUserByEmail Repository', () => {
       const _id = fakeUser.insertedId;
       await sut.save(_id, 'valid_token');
       const updatedFakeUser = await userModel.findOne({ _id });
-      expect(updatedFakeUser.AccessToken).toBe('valid_token');
+      expect(updatedFakeUser.accessToken).toBe('valid_token');
     });
   });
   
@@ -68,6 +71,15 @@ describe('Given the LoadUserByEmail Repository', () => {
       const promise = sut.save('any_id', 'valid_token');
 
       expect(promise).rejects.toThrow(new MissingParamError('userModel'));
+    });
+  });
+
+  describe('And no access token is provided', () => {
+    test('Then I expect it returns a MissingParamError', async() => {
+      const { sut } = makeSut();
+      const promise = sut.save('any_id');
+
+      expect(promise).rejects.toThrow(new MissingParamError('accessToken'));
     });
   });
 });
