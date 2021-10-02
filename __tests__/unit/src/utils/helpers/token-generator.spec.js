@@ -35,7 +35,7 @@ describe('Given the TokenGenerator', () => {
       const { sut } = makeSut();
       await sut.generate('any_value');
 
-      expect(jwt.value).toBe('any_value');
+      expect(jwt.value).toEqual({ _id: 'any_value' });
       expect(jwt.secret).toBe(sut.secret);
     });
   });

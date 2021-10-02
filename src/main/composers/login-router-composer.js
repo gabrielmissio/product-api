@@ -23,7 +23,7 @@ class LoginRouterComposer {
     });
     return new LoginRouter({
       authUseCase,
-      loginValidator
+      requestValidator: loginValidator
     });
   }
 };

@@ -294,7 +294,7 @@ describe('Given the auth usecase', () => {
       const { sut, tokenGeneratorSpy, loadUserByEmailRepositorySpy } = makeSut();
       await sut.auth({email: 'valid@mail.com', password: 'any_password'});
 
-      expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
+      expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user._id);
     });
   });
 
@@ -344,7 +344,7 @@ describe('Given the auth usecase', () => {
       const { sut, tokenGeneratorSpy, loadUserByEmailRepositorySpy, updateAccessTokenRepositorySpy } = makeSut();
       await sut.auth({email: 'valid@mail.com', password: 'any_password'});
 
-      expect(updateAccessTokenRepositorySpy.userId).toBe(loadUserByEmailRepositorySpy.user.id);
+      expect(updateAccessTokenRepositorySpy.userId).toBe(loadUserByEmailRepositorySpy.user._id);
       expect(updateAccessTokenRepositorySpy.AccessToken).toBe(tokenGeneratorSpy.AccessToken);
     });
   });

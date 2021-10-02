@@ -23,8 +23,8 @@ module.exports = class AuthUsecase {
       return null;
     }
 
-    const token = await this.tokenGenerator.generate(user.id);
-    await this.updateAccessTokenRepository.save(user.id, token);
+    const token = await this.tokenGenerator.generate(user._id);
+    await this.updateAccessTokenRepository.save(user._id, token);
     return token;
   };
 };
