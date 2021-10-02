@@ -6,7 +6,10 @@ const InvalidRequestError = require('../../../../../src/presentation/errors/inva
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCaseSpy();
   const requestValidatorSpy = makeRequestValidatorSpy();
-  const sut = new LoginRouter(authUseCaseSpy, requestValidatorSpy);
+  const sut = new LoginRouter({
+    authUseCase: authUseCaseSpy,
+    requestValidator: requestValidatorSpy
+  });
   authUseCaseSpy.AccessToken = 'valid_acess_token';
   return {
     sut,
@@ -29,7 +32,7 @@ const makeRequestValidatorSpy = () => {
 
 const makeRequestValidatorSpyWithError = () => {
   class RequestValidator {
-    validate(payload) {
+    validate() {
       throw new Error('any_error');
     };
   };
@@ -51,7 +54,7 @@ const makeAuthUseCaseSpy = () => {
 
 const makeAuthUseCaseSpyWithError = () => {
   class AuthUseCaseSpy {
-    async auth(email, password) {
+    async auth() {
       throw new Error('any_error');
     }
   }
@@ -163,7 +166,7 @@ describe('Given the login routes', () => {
     });
   });
 
-  describe('And no AuthUseCase is provided', () => {
+  describe('And no dependency is provided', () => {
     test('Then I expect it returns 500', async() => {
       const sut = new LoginRouter();
       const httpRequest = {
@@ -180,7 +183,11 @@ describe('Given the login routes', () => {
 
   describe('And AuthUseCase has no auth method', () => {
     test('Then I expect it returns 500', async() => {
-      const sut = new LoginRouter({});
+      const { requestValidatorSpy } = makeSut();
+      const sut = new LoginRouter({
+        requestValidator: requestValidatorSpy,
+        authUseCase: {}
+      });
       const httpRequest = {
         body: {
           email: 'any@mail.com',
@@ -195,8 +202,12 @@ describe('Given the login routes', () => {
 
   describe('And AuthUseCase throws an error', () => {
     test('Then I expect it returns 500', async() => {
+      const { requestValidatorSpy } = makeSut();
       const authUseCase = makeAuthUseCaseSpyWithError();
-      const sut = new LoginRouter(authUseCase);
+      const sut = new LoginRouter({
+        authUseCase,
+        requestValidator: requestValidatorSpy
+      });
       const httpRequest = {
         body: {
           email: 'any@mail.com',
@@ -228,7 +239,9 @@ describe('Given the login routes', () => {
   describe('And requestValidator is not provided', () => {
     test('Then I expect it returns 500', async() => {
       const { authUseCaseSpy } = makeSut();
-      const sut = new LoginRouter(authUseCaseSpy);
+      const sut = new LoginRouter({
+        authUseCase: authUseCaseSpy
+      });
       const httpRequest = {
         body: {
           email: 'any@mail.com',
@@ -244,7 +257,10 @@ describe('Given the login routes', () => {
   describe('And requestValidator has no validate method', () => {
     test('Then I expect it returns 500', async() => {
       const { authUseCaseSpy } = makeSut();
-      const sut = new LoginRouter(authUseCaseSpy, {});
+      const sut = new LoginRouter({
+        authUseCase: authUseCaseSpy,
+        requestValidator: {}
+      });
       const httpRequest = {
         body: {
           email: 'any@mail.com',
@@ -261,7 +277,10 @@ describe('Given the login routes', () => {
     test('Then I expect it returns 500', async() => {
       const { authUseCaseSpy } = makeSut();
       const requestValidator = makeRequestValidatorSpyWithError();
-      const sut = new LoginRouter(authUseCaseSpy, requestValidator);
+      const sut = new LoginRouter({
+        authUseCase: authUseCaseSpy,
+        requestValidator
+      });
       const httpRequest = {
         body: {
           email: 'any@mail.com',
