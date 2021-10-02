@@ -2,10 +2,11 @@
   "name": "product-api",
   "version": "1.0.0",
   "description": "Rest API for product management",
-  "main": "index.js",
+  "main": "src/main/index.js",
   "author": "Gabriel Missio",
   "license": "MIT",
   "scripts": {
+    "start": "node src/main",
     "test": "jest --color",
     "prepare": "husky install",
     "test:ci": "jest --color --coverage --noStackTrace --silent"
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "express": "^4.17.1",
     "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.1.2"
