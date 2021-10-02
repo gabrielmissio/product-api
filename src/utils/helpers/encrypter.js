@@ -1,7 +1,7 @@
 const { MissingParamError } = require('./../errors');
 const bcrypt = require('bcrypt');
 
-module.exports = class Encrypter {
+class Encrypter {
   async compare(value, hash) {
     if (!value) {
       throw new MissingParamError('value');
@@ -15,3 +15,5 @@ module.exports = class Encrypter {
     return isValid;
   };
 };
+
+module.exports = Encrypter;
