@@ -11,6 +11,9 @@ class UpdateAccessTokenRepository {
     if (!this.userModel) {
       throw new MissingParamError('userModel');
     }
+    if (!userId) {
+      throw new MissingParamError('userId');
+    } 
     if (!accessToken) {
       throw new MissingParamError('accessToken');
     }
@@ -80,6 +83,15 @@ describe('Given the LoadUserByEmail Repository', () => {
       const promise = sut.save('any_id');
 
       expect(promise).rejects.toThrow(new MissingParamError('accessToken'));
+    });
+  });
+
+  describe('And no userId is provided', () => {
+    test('Then I expect it returns a MissingParamError', async() => {
+      const { sut } = makeSut();
+      const promise = sut.save();
+
+      expect(promise).rejects.toThrow(new MissingParamError('userId'));
     });
   });
 });
