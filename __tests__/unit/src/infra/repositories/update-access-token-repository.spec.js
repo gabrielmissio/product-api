@@ -1,7 +1,7 @@
 const MongoHelper = require('./../../../../../src/infra/helpers/mongo-helper');
 const { MissingParamError } = require('./../../../../../src/utils/errors');
 const UpdateAccessTokenRepository = require('./../../../../../src/infra/repositories/update-access-token-repository');
-let db;
+let userModel;
 
 const makeSut = () => {
   return new UpdateAccessTokenRepository();
@@ -10,7 +10,7 @@ const makeSut = () => {
 describe('Given the LoadUserByEmail Repository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
-    db = await MongoHelper.getDb();
+    userModel = await MongoHelper.getCollection('users');
   });
 
   afterAll(async () => {
@@ -18,13 +18,13 @@ describe('Given the LoadUserByEmail Repository', () => {
   });
 
   beforeEach(async () => {
-    await db.collection('users').deleteMany()
+    await userModel.deleteMany()
   });
 
   describe('And calls the save() method', () => {
     test('Then I expect update the user AccessToken', async() => {
       const sut = makeSut();
-      const fakeUser = await db.collection('users').insertOne({
+      const fakeUser = await userModel.insertOne({
         email: 'valid@email.com',
         name: 'any_name',
         password: 'any_hashed_password'
@@ -32,7 +32,7 @@ describe('Given the LoadUserByEmail Repository', () => {
 
       const _id = fakeUser.insertedId;
       await sut.save(_id, 'valid_token');
-      const updatedFakeUser = await db.collection('users').findOne({ _id });
+      const updatedFakeUser = await userModel.findOne({ _id });
       expect(updatedFakeUser.accessToken).toBe('valid_token');
     });
   });

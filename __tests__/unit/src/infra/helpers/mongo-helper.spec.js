@@ -6,7 +6,7 @@ describe('Given the mongo helper', () => {
   });
 
   describe('And the db is disconnected', () => {
-    test('Then I expect that its reconnect when getDb() is invoked', async() => {
+    test('Then I expect that its reconnect when getCollection() is invoked', async() => {
       const sut = MongoHelper;
 
       await sut.connect(process.env.MONGO_URL)
@@ -15,7 +15,7 @@ describe('Given the mongo helper', () => {
       await sut.disconnect();
       expect(sut.db).toBeFalsy();
 
-      await sut.getDb();
+      await sut.getCollection('any_collection');
       expect(sut.db).toBeTruthy();
     });
   });
