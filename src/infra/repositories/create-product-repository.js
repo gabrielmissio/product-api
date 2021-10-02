@@ -7,7 +7,7 @@ class CreateProductRepository {
       throw new MissingParamError('product');
     }
 
-    const productModel = await MongoHelper.getCollection('users');
+    const productModel = await MongoHelper.getCollection('products');
     const newProduct = await productModel.insertOne(product);
 
     return newProduct;
