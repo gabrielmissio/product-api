@@ -1,6 +1,4 @@
-const { MissingParamError, RequestError } = require('./../../utils/errors');
-const { errorMessages: { PRODUCT_NOT_FOUND } } = require('./../../utils/enums');
-const { httpCodes: { NOT_FOUND } } = require('./../../utils/enums');
+const { MissingParamError } = require('./../../utils/errors');
 
 class DetailProductsUsecase {
   constructor({ loadProductDetailsByIdRepository } = {}) {
@@ -13,13 +11,6 @@ class DetailProductsUsecase {
     }
 
     const productDetails = await this.loadProductDetailsByIdRepository.load(productsId);
-    if (!productDetails) {
-      throw new RequestError({
-        message: PRODUCT_NOT_FOUND,
-        code: NOT_FOUND
-      });
-    }
-
     return productDetails;
   };
 };

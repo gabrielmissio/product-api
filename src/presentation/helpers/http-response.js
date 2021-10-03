@@ -1,5 +1,6 @@
 const UnauthorizedError = require('../errors/unauthorized-error');
 const InternalError = require('../errors/internal-error');
+const NotFoundError = require('../errors/not-found-error');
 
 class HttpResponse {
   static badRequest(error) {
@@ -40,6 +41,15 @@ class HttpResponse {
     return {
       statusCode: 201,
       body: data
+    };
+  };
+
+  static notFound(data) {
+    return {
+      statusCode: 404,
+      body: {
+        error: new NotFoundError(data).message
+      }
     };
   };
 
