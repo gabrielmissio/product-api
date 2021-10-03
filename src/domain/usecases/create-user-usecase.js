@@ -1,5 +1,6 @@
-const { MissingParamError, ConflictError } = require('./../../utils/errors');
-const { ALREADY_EXISTS } = require('./../helpers/error-message');
+const { MissingParamError, RequestError } = require('./../../utils/errors');
+const { errorMessages: { USER_ALREADY_EXISTS } } = require('./../../utils/enums');
+const { httpCodes: { CONFLICT } } = require('./../../utils/enums');
 
 class CreateUserUsecase {
   constructor({ createUserRepository, createUserFactory, loadUserByEmailRepository } = {}) {
@@ -18,7 +19,10 @@ class CreateUserUsecase {
 
     const existingUser = await this.loadUserByEmailRepository.load(email);
     if (existingUser) {
-      throw new ConflictError(ALREADY_EXISTS('user'));
+      throw new RequestError({
+        message: USER_ALREADY_EXISTS,
+        code: CONFLICT
+      });
     }
 
     const user = await this.createUserFactory.create({ email, password });

@@ -1,7 +1,7 @@
 const MissingParamError = require('./missing-param-error');
-const ConflictError = require('./conflict-error');
+const RequestError = require('./request-error');
 
 module.exports = {
   MissingParamError,
-  ConflictError
+  RequestError
 };
