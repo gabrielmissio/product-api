@@ -42,6 +42,18 @@ class HttpResponse {
       body: data
     };
   };
+
+  static handleError(error) {
+    const code = error.code || 500;
+    const message = error.message || new InternalError().message;
+
+    return {
+      statusCode: code,
+      body: {
+        error: message
+      }
+    };
+  };
 };
 
 module.exports = HttpResponse;
