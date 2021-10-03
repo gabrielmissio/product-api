@@ -1,4 +1,4 @@
-const CreateProductRouter = require('./../../presentation/routers/create-product-router');
+const CreateProductRouter = require('./../../presentation/routers/products/create-product-router');
 const CreateProductUseCase = require('./../../domain/usecases/create-product-usecase');
 const CreateProductRepository = require('./../../infra/repositories/products/create-product-repository');
 const CreateProductFactory = require('./../../infra/factories/create-product-factory');

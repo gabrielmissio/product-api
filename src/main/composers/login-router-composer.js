@@ -1,4 +1,4 @@
-const LoginRouter = require('./../../presentation/routers/login-router');
+const LoginRouter = require('../../presentation/routers/users/login-router');
 const AuthUseCase = require('./../../domain/usecases/auth-usecase');
 const LoadUserByEmailRepository = require('./../../infra/repositories/users/load-user-by-email-repository');
 const UpdateAccessTokenRepository = require('./../../infra/repositories/users/update-access-token-repository');
