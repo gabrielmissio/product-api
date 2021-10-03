@@ -18,7 +18,7 @@ class SignRouter {
 
       return HttpResponse.created(user);
     } catch (error) {
-      return HttpResponse.internalError();
+      return HttpResponse.handleError(error);
     };
   };
 };
