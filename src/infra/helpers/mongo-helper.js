@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 module.exports = {
   async connect(url, dbName) {
@@ -23,5 +23,9 @@ module.exports = {
     }
 
     return this.db.collection(name);
+  },
+
+  getObjectId(id) {
+    return ObjectId(id);
   }
 };
