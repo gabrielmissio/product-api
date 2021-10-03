@@ -10,7 +10,9 @@ class CreateUserFactory {
 
     return new User({
       email,
-      password: hash
+      password: hash,
+      updatedAt: new Date(),
+      insertedAt: new Date()
     });
   };
 };
