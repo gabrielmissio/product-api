@@ -1,5 +1,5 @@
 const DetailProductsRouter = require('../../../presentation/routers/products/detail-products-router');
-const DetailProductsUsecase = require('../../../domain/usecases/detail-products-usecase');
+const DetailProductsUsecase = require('../../../domain/usecases/products/detail-products-usecase');
 const LoadProductDetailsByIdRepository = require('../../../infra/repositories/products/load-product-details-by-id-repository');
 const RequestValidator = require('../../../presentation/validators/request-validator');
 const { detailProductValidatorSchema } = require('../../../presentation/validators/schemas');

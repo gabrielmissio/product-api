@@ -1,4 +1,4 @@
-const { MissingParamError } = require('./../../utils/errors');
+const { MissingParamError } = require('../../../utils/errors');
 
 class AuthUsecase {
   constructor({ loadUserByEmailRepository, encrypter, tokenGenerator, updateAccessTokenRepository } = {}) {

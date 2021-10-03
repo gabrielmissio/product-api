@@ -1,5 +1,5 @@
 const CreateProductRouter = require('../../../presentation/routers/products/create-product-router');
-const CreateProductUseCase = require('../../../domain/usecases/create-product-usecase');
+const CreateProductUseCase = require('../../../domain/usecases/products/create-product-usecase');
 const CreateProductRepository = require('../../../infra/repositories/products/create-product-repository');
 const CreateProductFactory = require('../../../infra/factories/create-product-factory');
 const RequestValidator = require('../../../presentation/validators/request-validator');

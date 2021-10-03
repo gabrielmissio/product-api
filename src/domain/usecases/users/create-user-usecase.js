@@ -1,6 +1,6 @@
-const { MissingParamError, RequestError } = require('./../../utils/errors');
-const { errorMessages: { USER_ALREADY_EXISTS } } = require('./../../utils/enums');
-const { httpCodes: { CONFLICT } } = require('./../../utils/enums');
+const { MissingParamError, RequestError } = require('../../../utils/errors');
+const { errorMessages: { USER_ALREADY_EXISTS } } = require('../../../utils/enums');
+const { httpCodes: { CONFLICT } } = require('../../../utils/enums');
 
 class CreateUserUsecase {
   constructor({ createUserRepository, createUserFactory, loadUserByEmailRepository } = {}) {
