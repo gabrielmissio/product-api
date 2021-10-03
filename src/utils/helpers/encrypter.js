@@ -14,6 +14,16 @@ class Encrypter {
     const isValid = await bcrypt.compare(value, hash);
     return isValid;
   };
+
+  async hash(value) {
+    if (!value) {
+      throw new MissingParamError('value');
+    }
+    const saltRounds = 10;
+
+    const hashedValue = await bcrypt.hash(value, saltRounds);
+    return hashedValue;
+  }
 };
 
 module.exports = Encrypter;
