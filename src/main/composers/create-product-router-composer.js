@@ -1,22 +1,24 @@
 const CreateProductRouter = require('./../../presentation/routers/create-product-router');
 const CreateProductUseCase = require('./../../domain/usecases/create-product-usecase');
-const CreateProductValidator = require('./../../presentation/validators/create-product-validator');
 const CreateProductRepository = require('./../../infra/repositories/create-product-repository');
 const CreateProductFactory = require('./../../infra/factories/create-product-factory');
+const RequestValidator = require('./../../presentation/validators/request-validator');
+const { createProductValidatorSchema } = require('../../presentation/validators/schemas');
 
 class CreateProductRouterComposer {
   static compose() {
     const createProductFactory = new CreateProductFactory();
     const createProductRepository = new CreateProductRepository();
-    const createProductValidator = new CreateProductValidator();
+    const requestValidator = new RequestValidator(createProductValidatorSchema);
 
     const createProductUseCase = new CreateProductUseCase({
       createProductRepository,
       createProductFactory
     });
+
     return new CreateProductRouter({
       createProductUseCase,
-      requestValidator: createProductValidator
+      requestValidator
     });
   }
 };

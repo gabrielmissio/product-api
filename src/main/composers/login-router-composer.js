@@ -1,10 +1,11 @@
 const LoginRouter = require('./../../presentation/routers/login-router');
 const AuthUseCase = require('./../../domain/usecases/auth-usecase');
-const LoginValidator = require('./../../presentation/validators/login-validator');
 const LoadUserByEmailRepository = require('./../../infra/repositories/load-user-by-email-repository');
 const UpdateAccessTokenRepository = require('./../../infra/repositories/update-access-token-repository');
 const Encrypter = require('./../../utils/helpers/encrypter');
 const TokenGenerator = require('./../../utils/helpers/token-generator');
+const RequestValidator = require('./../../presentation/validators/request-validator');
+const { loginValidatorSchema } = require('./../../presentation/validators/schemas');
 const env = require('./../config/env');
 
 class LoginRouterComposer {
@@ -13,7 +14,7 @@ class LoginRouterComposer {
     const updateAccessTokenRepository = new UpdateAccessTokenRepository();
     const encrypter = new Encrypter();
     const tokenGenerator = new TokenGenerator(env.secret);
-    const loginValidator = new LoginValidator();
+    const requestValidator = new RequestValidator(loginValidatorSchema);
 
     const authUseCase = new AuthUseCase({
       loadUserByEmailRepository,
@@ -21,9 +22,10 @@ class LoginRouterComposer {
       encrypter,
       tokenGenerator
     });
+
     return new LoginRouter({
       authUseCase,
-      requestValidator: loginValidator
+      requestValidator
     });
   }
 };

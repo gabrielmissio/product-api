@@ -10,11 +10,4 @@ const schema = Joi.object({
   }).required()
 });
 
-class CreateProductValidator {
-  validate(params) {
-    const { error } = schema.validate(params);
-    return error;
-  };
-};
-
-module.exports = CreateProductValidator;
+module.exports = schema;

@@ -7,11 +7,4 @@ const schema = Joi.object({
     .required()
 });
 
-class SignupValidator {
-  validate(params) {
-    const { error } = schema.validate(params);
-    return error;
-  };
-};
-
-module.exports = SignupValidator;
+module.exports = schema;

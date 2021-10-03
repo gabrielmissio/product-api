@@ -1,15 +1,16 @@
 const SignupRouter = require('./../../presentation/routers/signup-router');
-const SignupValidator = require('./../../presentation/validators/signup-validator');
 const CreateUserUseCase = require('./../../domain/usecases/create-user-usecase');
 const CreateUserRepository = require('./../../infra/repositories/create-user-repository');
 const CreateUserFactory = require('./../../infra/factories/create-user-factory');
 const LoadUserByEmailRepository = require('./../../infra/repositories/load-user-by-email-repository');
 const Encrypter = require('./../../utils/helpers/encrypter');
+const RequestValidator = require('./../../presentation/validators/request-validator');
+const { signupValidatorSchema } = require('./../../presentation/validators/schemas');
 
 class LoginRouterComposer {
   static compose() {
     const encrypter = new Encrypter();
-    const signupValidator = new SignupValidator();
+    const requestValidator = new RequestValidator(signupValidatorSchema);
     const createUserRepository = new CreateUserRepository();
     const loadUserByEmailRepository = new LoadUserByEmailRepository();
     const createUserFactory = new CreateUserFactory({
@@ -21,9 +22,10 @@ class LoginRouterComposer {
       createUserFactory,
       loadUserByEmailRepository
     });
+
     return new SignupRouter({
       createUserUseCase,
-      requestValidator: signupValidator
+      requestValidator
     });
   }
 };
