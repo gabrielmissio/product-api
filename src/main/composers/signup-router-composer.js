@@ -3,6 +3,7 @@ const SignupValidator = require('./../../presentation/validators/signup-validato
 const CreateUserUseCase = require('./../../domain/usecases/create-user-usecase');
 const CreateUserRepository = require('./../../infra/repositories/create-user-repository');
 const CreateUserFactory = require('./../../infra/factories/create-user-factory');
+const LoadUserByEmailRepository = require('./../../infra/repositories/load-user-by-email-repository');
 const Encrypter = require('./../../utils/helpers/encrypter');
 
 class LoginRouterComposer {
@@ -10,13 +11,15 @@ class LoginRouterComposer {
     const encrypter = new Encrypter();
     const signupValidator = new SignupValidator();
     const createUserRepository = new CreateUserRepository();
+    const loadUserByEmailRepository = new LoadUserByEmailRepository();
     const createUserFactory = new CreateUserFactory({
       encrypter
     });
 
     const createUserUseCase = new CreateUserUseCase({
       createUserRepository,
-      createUserFactory
+      createUserFactory,
+      loadUserByEmailRepository
     });
     return new SignupRouter({
       createUserUseCase,
