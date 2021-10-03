@@ -1,17 +1,20 @@
 const { MissingParamError } = require('./../../utils/errors');
 
 class CreateProductUsecase {
-  constructor({ createProductRepository } = {}) {
+  constructor({ createProductRepository, createProductFactory } = {}) {
     this.createProductRepository = createProductRepository;
+    this.createProductFactory = createProductFactory;
   };
 
-  async create({ product }) {
-    if (!product) {
+  async create(payload) {
+    if (!payload.product) {
       throw new MissingParamError('product');
     }
 
-    const newProduct = await this.createProductRepository.create(product);
-    return newProduct;
+    const product = this.createProductFactory.create(payload.product);
+    const dbResponse = await this.createProductRepository.create(product);
+
+    return dbResponse;
   };
 };
 
