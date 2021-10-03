@@ -1,8 +1,8 @@
 const SignupRouter = require('./../../presentation/routers/signup-router');
 const CreateUserUseCase = require('./../../domain/usecases/create-user-usecase');
-const CreateUserRepository = require('./../../infra/repositories/create-user-repository');
+const CreateUserRepository = require('./../../infra/repositories/users/create-user-repository');
 const CreateUserFactory = require('./../../infra/factories/create-user-factory');
-const LoadUserByEmailRepository = require('./../../infra/repositories/load-user-by-email-repository');
+const LoadUserByEmailRepository = require('./../../infra/repositories/users/load-user-by-email-repository');
 const Encrypter = require('./../../utils/helpers/encrypter');
 const RequestValidator = require('./../../presentation/validators/request-validator');
 const { signupValidatorSchema } = require('./../../presentation/validators/schemas');

@@ -1,5 +1,5 @@
-const { MissingParamError } = require('../../utils/errors');
-const MongoHelper = require('./../helpers/mongo-helper');
+const { MissingParamError } = require('../../../utils/errors');
+const MongoHelper = require('../../helpers/mongo-helper');
 
 class UpdateAccessTokenRepository {
   async save(userId, accessToken) {

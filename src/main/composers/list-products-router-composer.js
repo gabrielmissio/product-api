@@ -1,6 +1,6 @@
 const ListProductsRouter = require('../../presentation/routers/list-products-router');
 const ListProductsUseCase = require('./../../domain/usecases/list-products-usecase');
-const ListProductsRepository = require('./../../infra/repositories/list-products-repository');
+const ListProductsRepository = require('./../../infra/repositories/products/list-products-repository');
 const RequestValidator = require('./../../presentation/validators/request-validator');
 const { listProductsValidatorSchema } = require('./../../presentation/validators/schemas');
 
