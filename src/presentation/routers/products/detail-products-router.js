@@ -15,6 +15,9 @@ class DetailProductsRouter {
       }
 
       const productDetails = await this.detailProductsUseCase.detail(httpRequest.params);
+      if (!productDetails) {
+        return HttpResponse.notFound('product');
+      }
 
       return HttpResponse.ok(productDetails);
     } catch (error) {

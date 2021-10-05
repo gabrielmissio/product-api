@@ -1,11 +1,11 @@
 const HttpResponse = require('../../helpers/http-response');
 const InvalidRequestError = require('../../errors/invalid-request-error');
 
-class LoginRouter {
-  constructor({ authUseCase, requestValidator } = {}) {
-    this.authUseCase = authUseCase;
+class ProductPurchaseRouter {
+  constructor({ productPurchaseUseCase, requestValidator } = {}) {
+    this.productPurchaseUseCase = productPurchaseUseCase;
     this.requestValidator = requestValidator;
-  };
+  }
 
   async route(httpRequest) {
     try {
@@ -14,15 +14,13 @@ class LoginRouter {
         return HttpResponse.badRequest(new InvalidRequestError(errors));
       }
 
-      const accessToken = await this.authUseCase.auth(httpRequest.body);
-      if (!accessToken) {
-        return HttpResponse.unauthorized();
-      }
-      return HttpResponse.ok({ accessToken });
+      const productPurchase = await this.productPurchaseUseCase.buy(httpRequest.body);
+
+      return HttpResponse.created(productPurchase);
     } catch (error) {
       return HttpResponse.internalError();
     };
   };
 };
 
-module.exports = LoginRouter;
+module.exports = ProductPurchaseRouter;

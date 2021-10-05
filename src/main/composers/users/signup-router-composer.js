@@ -1,5 +1,5 @@
 const SignupRouter = require('../../../presentation/routers/users/signup-router');
-const CreateUserUseCase = require('../../../domain/usecases/create-user-usecase');
+const CreateUserUseCase = require('../../../domain/usecases/users/create-user-usecase');
 const CreateUserRepository = require('../../../infra/repositories/users/create-user-repository');
 const CreateUserFactory = require('../../../infra/factories/create-user-factory');
 const LoadUserByEmailRepository = require('../../../infra/repositories/users/load-user-by-email-repository');

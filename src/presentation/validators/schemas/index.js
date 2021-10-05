@@ -3,11 +3,13 @@ const listProductsValidatorSchema = require('./products/list-products-validator-
 const loginValidatorSchema = require('./users/login-validator-schema');
 const signupValidatorSchema = require('./users/signup-validator-schema');
 const detailProductValidatorSchema = require('./products/detail-product-validator-schema');
+const productPurchaseValidatorSchema = require('./purchases/product-purchase-validator-schema');
 
 module.exports = {
   createProductValidatorSchema,
   listProductsValidatorSchema,
   loginValidatorSchema,
   signupValidatorSchema,
-  detailProductValidatorSchema
+  detailProductValidatorSchema,
+  productPurchaseValidatorSchema
 };
