@@ -1,13 +1,12 @@
 const HttpResponse = require('../../helpers/http-response');
 const InvalidRequestError = require('../../errors/invalid-request-error');
 
-class CreateProductRouter {
+class ProductPurchaseRouter {
   constructor({ productPurchaseUseCase, requestValidator } = {}) {
     this.productPurchaseUseCase = productPurchaseUseCase;
     this.requestValidator = requestValidator;
   }
 
-  // productPurchaseUseCase
   async route(httpRequest) {
     try {
       const errors = this.requestValidator.validate(httpRequest.body);
@@ -15,13 +14,13 @@ class CreateProductRouter {
         return HttpResponse.badRequest(new InvalidRequestError(errors));
       }
 
-      const product = await this.createProductUseCase.create(httpRequest.body);
+      const productPurchase = await this.productPurchaseUseCase.buy(httpRequest.body);
 
-      return HttpResponse.created(product);
+      return HttpResponse.created(productPurchase);
     } catch (error) {
       return HttpResponse.internalError();
     };
   };
 };
 
-module.exports = CreateProductRouter;
+module.exports = ProductPurchaseRouter;
