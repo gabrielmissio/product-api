@@ -2,7 +2,7 @@ const { MissingParamError, RequestError } = require('../../../utils/errors');
 const { errorMessages: { PRODUCT_NOT_FOUND, INTERNAL_SERVER_ERROR } } = require('../../../utils/enums');
 const { httpCodes: { NOT_FOUND } } = require('../../../utils/enums');
 
-class ProductPurchaseUseCase {
+class CreateProductPurchaseUseCase {
   constructor({ loadProductDetailsByIdRepository, createProductPurchaseRepository, createProductPurchaseFactory, getpaymentConditionsFactory } = {}) {
     this.loadProductDetailsByIdRepository = loadProductDetailsByIdRepository;
     this.createProductPurchaseRepository = createProductPurchaseRepository;
@@ -37,4 +37,4 @@ class ProductPurchaseUseCase {
   };
 };
 
-module.exports = ProductPurchaseUseCase;
+module.exports = CreateProductPurchaseUseCase;
