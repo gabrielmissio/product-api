@@ -4,6 +4,7 @@ const LoadProductDetailsByIdRepository = require('./../../../infra/repositories/
 const CreateProductPurchaseRepository = require('./../../../infra/repositories/purchases/create-product-purchase-repository');
 const CreateProductPurchaseFactory = require('../../../infra/factories/product-purchase-factory');
 const GetpaymentConditionsFactory = require('./../../../infra/factories/get-payment-condictions-factory');
+const LoadProductPurchaseDetailsByIdRepository = require('./../../../infra/repositories/purchases/load-product-purchase-details-by-id-repository');
 const RequestValidator = require('./../../../presentation/validators/request-validator');
 const { productPurchaseValidatorSchema } = require('./../../../presentation/validators/schemas');
 
@@ -13,13 +14,15 @@ class ProductPurchaseRouterComposer {
     const createProductPurchaseRepository = new CreateProductPurchaseRepository();
     const createProductPurchaseFactory = new CreateProductPurchaseFactory();
     const getpaymentConditionsFactory = new GetpaymentConditionsFactory();
+    const loadProductPurchaseDetailsByIdRepository = new LoadProductPurchaseDetailsByIdRepository();
     const requestValidator = new RequestValidator(productPurchaseValidatorSchema);
 
     const productPurchaseUseCase = new CreateProductPurchaseUseCase({
       loadProductDetailsByIdRepository,
       createProductPurchaseRepository,
       createProductPurchaseFactory,
-      getpaymentConditionsFactory
+      getpaymentConditionsFactory,
+      loadProductPurchaseDetailsByIdRepository
     });
 
     return new ProductPurchaseRouter({

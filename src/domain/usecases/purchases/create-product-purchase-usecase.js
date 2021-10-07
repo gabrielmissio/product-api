@@ -3,11 +3,18 @@ const { errorMessages: { PRODUCT_NOT_FOUND, INTERNAL_SERVER_ERROR } } = require(
 const { httpCodes: { NOT_FOUND } } = require('../../../utils/enums');
 
 class CreateProductPurchaseUseCase {
-  constructor({ loadProductDetailsByIdRepository, createProductPurchaseRepository, createProductPurchaseFactory, getpaymentConditionsFactory } = {}) {
+  constructor({
+    loadProductDetailsByIdRepository,
+    createProductPurchaseRepository,
+    createProductPurchaseFactory,
+    getpaymentConditionsFactory,
+    loadProductPurchaseDetailsByIdRepository
+  } = {}) {
     this.loadProductDetailsByIdRepository = loadProductDetailsByIdRepository;
     this.createProductPurchaseRepository = createProductPurchaseRepository;
     this.createProductPurchaseFactory = createProductPurchaseFactory;
     this.getpaymentConditionsFactory = getpaymentConditionsFactory;
+    this.loadProductPurchaseDetailsByIdRepository = loadProductPurchaseDetailsByIdRepository;
   };
 
   async buy({ product, paymentCondition: paymentConditionInput }) {
@@ -32,8 +39,10 @@ class CreateProductPurchaseUseCase {
     }
 
     const productPurchase = this.createProductPurchaseFactory.create({ product, paymentCondition });
-    const dbResponse = this.createProductPurchaseRepository.create(productPurchase);
-    return dbResponse;
+    const dbResponse = await this.createProductPurchaseRepository.create(productPurchase);
+
+    const createdProductPurchase = await this.loadProductPurchaseDetailsByIdRepository.load(dbResponse.insertedId);
+    return createdProductPurchase;
   };
 };
 
