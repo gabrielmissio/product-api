@@ -7,6 +7,7 @@ class CreateProductPurchaseFactory {
       product,
       paymentCondition,
       status: WAITING_CONFIRMATION,
+      saleValue: paymentCondition.value,
       updatedAt: new Date(),
       insertedAt: new Date()
     });
