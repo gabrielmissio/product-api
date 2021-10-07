@@ -1,23 +1,24 @@
 const { MissingParamError } = require('../../../utils/errors');
 const MongoHelper = require('../../helpers/mongo-helper');
 
-class LoadProductDetailsByIdRepository {
+class LoadProductPurchaseDetailsByIdRepository {
   async load(id) {
     if (!id) {
       throw new MissingParamError('id');
     }
 
-    const productModel = await MongoHelper.getCollection('products');
+    const productModel = await MongoHelper.getCollection('purchases');
     const query = {
       _id: MongoHelper.getObjectId(id)
     };
     const projection = {
       _id: 1,
-      name: 1,
-      valueUnitary: 1,
-      amount: 1,
-      dateOfLastSale: 1,
-      lastSaleValue: 1
+      product: 1,
+      paymentCondition: 1,
+      status: 1,
+      saleValue: 1,
+      updatedAt: 1,
+      insertedAt: 1
     };
 
     const productDetails = await productModel.findOne(query, { projection });
@@ -25,4 +26,4 @@ class LoadProductDetailsByIdRepository {
   };
 };
 
-module.exports = LoadProductDetailsByIdRepository;
+module.exports = LoadProductPurchaseDetailsByIdRepository;
