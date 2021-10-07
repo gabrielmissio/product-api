@@ -1,13 +1,18 @@
+const { MissingParamError } = require('../../../utils/errors');
 const MongoHelper = require('../../helpers/mongo-helper');
 
-class LoadProductDetailsById {
+class LoadProductDetailsByIdRepository {
   async load(id) {
+    if (!id) {
+      throw new MissingParamError('id');
+    }
+
     const productModel = await MongoHelper.getCollection('products');
     const query = {
       _id: MongoHelper.getObjectId(id)
     };
     const projection = {
-      _id: 0,
+      _id: 1,
       name: 1,
       valueUnitary: 1,
       amount: 1,
@@ -20,4 +25,4 @@ class LoadProductDetailsById {
   };
 };
 
-module.exports = LoadProductDetailsById;
+module.exports = LoadProductDetailsByIdRepository;
