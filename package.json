@@ -6,6 +6,7 @@
   "author": "Gabriel Missio",
   "license": "MIT",
   "scripts": {
+    "start-db": "docker compose up",
     "start": "node src/main",
     "test": "jest --color --runInBand",
     "prepare": "husky install",
