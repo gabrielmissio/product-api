@@ -18,7 +18,7 @@ class ListProductsRouter {
 
       return HttpResponse.ok(listProducts);
     } catch (error) {
-      return HttpResponse.internalError();
+      return HttpResponse.handleError(error);
     };
   };
 };

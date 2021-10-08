@@ -18,7 +18,7 @@ class CreateProductRouter {
 
       return HttpResponse.created(product);
     } catch (error) {
-      return HttpResponse.internalError();
+      return HttpResponse.handleError(error);
     };
   };
 };

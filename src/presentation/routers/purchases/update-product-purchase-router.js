@@ -18,7 +18,7 @@ class UpdateProductPurchaseRouter {
 
       return HttpResponse.created(productPurchase);
     } catch (error) {
-      return HttpResponse.internalError();
+      return HttpResponse.handleError(error);
     };
   };
 };

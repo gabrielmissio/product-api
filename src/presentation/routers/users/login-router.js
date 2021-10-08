@@ -20,7 +20,7 @@ class LoginRouter {
       }
       return HttpResponse.ok({ accessToken });
     } catch (error) {
-      return HttpResponse.internalError();
+      return HttpResponse.handleError(error);
     };
   };
 };
