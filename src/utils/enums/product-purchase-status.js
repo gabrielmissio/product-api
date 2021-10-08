@@ -1,5 +1,7 @@
 const productPurchaseStatus = {
-  WAITING_CONFIRMATION: 'waiting confirmation'
+  CANCEL_PURCHASE_WITH_APPROVED_STATUS: 'CANCEL_PURCHASE_WITH_APPROVED_STATUS',
+  WAITING_CONFIRMATION: 'WAITING_CONFIRMATION',
+  APPROVED: 'APPROVED'
 };
 
 module.exports = Object.freeze(productPurchaseStatus);

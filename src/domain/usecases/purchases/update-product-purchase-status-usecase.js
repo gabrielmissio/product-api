@@ -1,6 +1,6 @@
 const { MissingParamError, RequestError } = require('../../../utils/errors');
-const { errorMessages: { PRODUCT_NOT_FOUND, PRODUCT_PURCHASE_NOT_FOUND } } = require('../../../utils/enums');
-const { httpCodes: { NOT_FOUND } } = require('../../../utils/enums');
+const { errorMessages: { PRODUCT_NOT_FOUND, PRODUCT_PURCHASE_NOT_FOUND, PRODUCT_PURCHASE_CONFLIC_PROPOSAL } } = require('../../../utils/enums');
+const { httpCodes: { NOT_FOUND, CONFLICT }, productPurchaseStatus: { APPROVED, CANCEL_PURCHASE_WITH_APPROVED_STATUS } } = require('../../../utils/enums');
 
 class UpdateProductPurchaseStatusUseCase {
   constructor({
@@ -41,12 +41,27 @@ class UpdateProductPurchaseStatusUseCase {
       });
     }
 
-    const newAmountValue = existingProduct.amount - 1;// TODO: get newAmountValue dynamically at update time
-    await this.updateProductAmountRepository.update(existingProduct._id, newAmountValue);// TODO: pass operation in place of newAmountValue
-    await this.updateProductPurchaseStatusRepository.update(existingProductPurchase._id, status);
-    await this.updateDateOfLastProductSaleRepository.update(existingProduct._id, new Date().toISOString());
+    if (status === existingProductPurchase.status) {
+      throw new RequestError({
+        message: PRODUCT_PURCHASE_CONFLIC_PROPOSAL,
+        code: CONFLICT
+      });
+    }
 
+    if (status === APPROVED) {
+      const newAmountValue = existingProduct.amount - 1;
+      await this.updateProductAmountRepository.update(existingProduct._id, newAmountValue);
+      await this.updateDateOfLastProductSaleRepository.update(existingProduct._id, new Date().toISOString());
+    }
+
+    if (status === CANCEL_PURCHASE_WITH_APPROVED_STATUS) {
+      const newAmountValue = existingProduct.amount + 1;
+      await this.updateProductAmountRepository.update(existingProduct._id, newAmountValue);
+    }
+
+    await this.updateProductPurchaseStatusRepository.update(existingProductPurchase._id, status);
     const updatedProductPurchase = await this.loadProductPurchaseDetailsByIdRepository.load(productPurchaseId);
+
     return updatedProductPurchase;
   };
 };
