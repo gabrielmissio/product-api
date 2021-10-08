@@ -1,6 +1,6 @@
 const { MissingParamError } = require('./../../utils/errors');
 
-class GetpaymentConditionsFactory { // TODO: maybe move to a use case class
+class GetpaymentConditionsFactory {
   async get({ numberOfInstallments, inputValue }) {
     if (!numberOfInstallments) {
       throw new MissingParamError('numberOfInstallments');
