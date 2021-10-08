@@ -15,3 +15,5 @@ npm i
 npm run start-db
 npm start
 ```
+[postman collection](https://www.getpostman.com/collections/3f0c11547b3fd7124c81) 
+
